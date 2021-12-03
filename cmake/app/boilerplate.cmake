@@ -77,7 +77,7 @@ message(STATUS "Application: ${APPLICATION_SOURCE_DIR}")
 set(ENV_RTOCHIUS_BASE $ENV{RTOCHIUS_BASE})
 # This add support for old style boilerplate include.
 if((NOT DEFINED RTOCHIUS_BASE) AND (DEFINED ENV_RTOCHIUS_BASE))
-  set(RTOCHIUS_BASE ${ENV_RTOCHIUS_BASE} CACHE PATH "rtochius base")
+	set(RTOCHIUS_BASE ${ENV_RTOCHIUS_BASE} CACHE PATH "rtochius base")
 endif()
 
 # Note any later project() resets PROJECT_SOURCE_DIR
@@ -98,7 +98,7 @@ set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${AUTOCONF_H})
 #
 include(CheckCCompilerFlag)
 include(CheckCXXCompilerFlag)
-
+include(${RTOCHIUS_BASE}/cmake/extensions.cmake)
 
 
 

@@ -19,7 +19,7 @@ macro(include_boilerplate location)
 endmacro()
 
 set(ENV_RTOCHIUS_BASE ${CMAKE_CURRENT_SOURCE_DIR})
-if ((NOT DEFINED RTOCHIUS_BASE) AND (DEFINED ENV_RTOCHIUS_BASE))
+if((NOT DEFINED RTOCHIUS_BASE) AND (DEFINED ENV_RTOCHIUS_BASE))
 	# Get rid of any double folder string before comparison, as example, user provides
 	# RTOCHIUS_BASE=//path/to//rtochius_base/
 	# must also work.
