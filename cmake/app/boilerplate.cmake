@@ -175,5 +175,30 @@ include(${RTOCHIUS_BASE}/cmake/target_toolchain_flags.cmake)
 
 include(${RTOCHIUS_BASE}/cmake/kconfig.cmake)
 
+include(${RTOCHIUS_BASE}/cmake/dts.cmake)
 
+set(CMAKE_PREFIX_PATH ${RTOCHIUS_BASE} CACHE PATH "")
+list(APPEND CMAKE_PREFIX_PATH ${RTOCHIUS_BASE}/kernel/librtochius)
 
+configure_file(${RTOCHIUS_BASE}/version.h.in ${APPLICATION_BINARY_DIR}/include/generated/version.h)
+
+set(KERNEL_SOURCE_DIR ${RTOCHIUS_BASE}/kernel CACHE PATH "")
+set(USERVICE_SOURCE_DIR ${RTOCHIUS_BASE}/uservice CACHE PATH "")
+set(DRIVERS_SOURCE_DIR ${RTOCHIUS_BASE}/drivers CACHE PATH "")
+set(SERVERS_SOURCE_DIR ${RTOCHIUS_BASE}/servers CACHE PATH "")
+
+add_subdirectory(${USERVICE_SOURCE_DIR}  ${uservice__build_dir})
+add_subdirectory(${DRIVERS_SOURCE_DIR}   ${drivers__build_dir})
+add_subdirectory(${SERVERS_SOURCE_DIR}   ${servers__build_dir})
+
+get_property(USERVICE_ARCHIVE_FILE_PROPERTY GLOBAL PROPERTY USERVICE_ARCHIVE_FILE)
+get_property(DRIVERS_ARCHIVE_FILE_PROPERTY GLOBAL PROPERTY DRIVERS_ARCHIVE_FILE)
+get_property(USERVICE_ARCHIVE_FILE_LIST_PROPERTY GLOBAL PROPERTY USERVICE_ARCHIVE_FILE_LIST)
+get_property(DRIVERS_ARCHIVE_FILE_LIST_PROPERTY GLOBAL PROPERTY DRIVERS_ARCHIVE_FILE_LIST)
+
+make_kernel_drivers_archive(${DRIVERS_ARCHIVE_FILE_PROPERTY} ${DRIVERS_ARCHIVE_FILE_LIST_PROPERTY})
+make_kernel_uservice_archive(${USERVICE_ARCHIVE_FILE_PROPERTY} ${USERVICE_ARCHIVE_FILE_LIST_PROPERTY})
+
+add_subdirectory(${KERNEL_SOURCE_DIR}    ${kernel__build_dir})
+
+qemu_virt_setup()

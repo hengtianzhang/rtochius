@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: GPL-2.0
+#
+menu "Rtochius Libs configuration"
+
+source "lib/base/Kconfig"
+
+endmenu

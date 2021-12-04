@@ -1,0 +1,96 @@
+# SPDX-License-Identifier: GPL-2.0
+#
+menu "Rtochius Uservice configuration"
+
+menu "Compiler Options"
+
+choice
+	prompt "Optimization level"
+	default SPEED_OPTIMIZATIONS
+	help
+	Note that these flags shall only control the compiler
+	optimization level, and that no extra debug code shall be
+	conditionally compiled based on them.
+
+config SIZE_OPTIMIZATIONS
+	bool "Optimize for size"
+	help
+	  Compiler optimizations will be set to -Os independently of other
+	  options.
+
+config SPEED_OPTIMIZATIONS
+	bool "Optimize for speed"
+	help
+	  Compiler optimizations will be set to -O2 independently of other
+	  options.
+
+config DEBUG_OPTIMIZATIONS
+	bool "Optimize debugging experience"
+	help
+	  Compiler optimizations will be set to -Og independently of other
+	  options.
+
+config NO_OPTIMIZATIONS
+	bool "Optimize nothing"
+	help
+	  Compiler optimizations will be set to -O0 independently of other
+	  options.
+
+endchoice
+
+config DEBUG_APP
+	bool "Debugging application"
+	default n
+	depends on !DEBUG_OPTIMIZATIONS
+	help
+	  Compiler Debug will be set to -g independently of other
+	  options.
+
+endmenu
+
+menuconfig QEMU_VIRT
+	bool "Qemu virt Support for the application"
+	help
+	  This option enables qemu virt.
+
+if QEMU_VIRT
+
+config QEMU_SYSTEM
+	string "Qemu system select"
+	default "aarch64" if ARM64
+
+config QEMU_CPU
+	string "Qemu cpu select"
+	default "cortex-a57" if ARM64
+
+config QEMU_MACHINE
+	string "Qemu machine select"
+	default "virt" if ARM64
+
+config QEMU_VIRT_OPTION
+	string "Qemu virt optin"
+	default "gic-version=2" if ARM64
+
+config QEMU_APPEND
+	string "Qemu append"
+	default ""
+
+config QEMU_INITRD
+	string "Qemu initrd"
+	default ""
+
+config QEMU_MEMORY
+	string "Qemu memory"
+	default "4G"
+
+config QEMU_GRAPHIC
+	bool "Qemu graphic"
+	default n
+
+config QEMU_DEBUG
+	bool "Qemu debug"
+	default n
+
+endif
+
+endmenu

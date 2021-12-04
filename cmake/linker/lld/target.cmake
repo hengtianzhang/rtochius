@@ -67,49 +67,49 @@ endmacro()
 
 # Run $LINKER_SCRIPT file through the C preprocessor, producing ${linker_script_gen}
 # NOTE: ${linker_script_gen} will be produced at build-time; not at configure-time
-macro(configure_service_linker_script service_linker_script_gen service_linker_pass_define)
-	set(service_extra_dependencies ${ARGN})
+macro(configure_uservice_linker_script uservice_linker_script_gen uservice_linker_pass_define)
+	set(uservice_extra_dependencies ${ARGN})
 
 	# Different generators deal with depfiles differently.
 	if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
 		# Note that the IMPLICIT_DEPENDS option is currently supported only
 		# for Makefile generators and will be ignored by other generators.
-		set(service_linker_script_dep IMPLICIT_DEPENDS C ${SERVICE_LINKER_SCRIPT})
+		set(uservice_linker_script_dep IMPLICIT_DEPENDS C ${USERVICE_LINKER_SCRIPT})
 	elseif(CMAKE_GENERATOR STREQUAL "Ninja")
 		# Using DEPFILE with other generators than Ninja is an error.
-		set(service_linker_script_dep DEPFILE ${service_linker_script_gen}.dep)
+		set(uservice_linker_script_dep DEPFILE ${uservice_linker_script_gen}.dep)
 	else()
 		# TODO: How would the linker script dependencies work for non-linker
 		# script generators.
 		message(STATUS "Warning; this generator is not well supported. The
 	Linker script may not be regenerated when it should.")
-		set(service_linker_script_dep "")
+		set(uservice_linker_script_dep "")
 	endif()
 
-	service_get_include_directories_for_lang(C service_current_includes)
-	get_property(service_current_defines GLOBAL PROPERTY PROPERTY_LINKER_SCRIPT_DEFINES)
+	uservice_get_include_directories_for_lang(C uservice_current_includes)
+	get_property(uservice_current_defines GLOBAL PROPERTY PROPERTY_LINKER_SCRIPT_DEFINES)
 
 	add_custom_command(
-		OUTPUT ${service_linker_script_gen}
+		OUTPUT ${uservice_linker_script_gen}
 		DEPENDS
-		${SERVICE_LINKER_SCRIPT}
+		${USERVICE_LINKER_SCRIPT}
 		${extra_dependencies}
-		# NB: 'service_linker_script_dep' will use a keyword that ends 'DEPENDS'
-		${service_linker_script_dep}
+		# NB: 'uservice_linker_script_dep' will use a keyword that ends 'DEPENDS'
+		${uservice_linker_script_dep}
 		COMMAND ${CMAKE_C_COMPILER}
 		-x assembler-with-cpp
 		-undef
-		-MD -MF ${service_linker_script_gen}.dep -MT ${service_linker_script_gen}
+		-MD -MF ${uservice_linker_script_gen}.dep -MT ${uservice_linker_script_gen}
 		-D_LINKER
 		-D_ASMLANGUAGE
-		${service_current_includes}
-		${service_current_defines}
-		${service_linker_pass_define}
-		-E ${SERVICE_LINKER_SCRIPT}
+		${uservice_current_includes}
+		${uservice_current_defines}
+		${uservice_linker_pass_define}
+		-E ${USERVICE_LINKER_SCRIPT}
 		-P # Prevent generation of debug `#line' directives.
-		-o ${service_linker_script_gen}
+		-o ${uservice_linker_script_gen}
 		BYPRODUCTS
-		${service_linker_script_gen}.dep
+		${uservice_linker_script_gen}.dep
 		VERBATIM
 		WORKING_DIRECTORY ${APPLICATION_BINARY_DIR}
 		COMMAND_EXPAND_LISTS

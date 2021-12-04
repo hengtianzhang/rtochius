@@ -4,3 +4,15 @@
 # SPDX-License-Identifier: Apache-2.0
 
 mainmenu "Rtochius/$(ARCH) $(RTOCHIUS_VERSION_STRING) Configuration (Project: $(APPLICATION_SOURCE))"
+
+source "scripts/Kconfig.include"
+
+source "kernel/Kconfig"
+
+source "lib/Kconfig"
+
+source "uservice/Kconfig"
+
+source "servers/Kconfig"
+
+osource "drivers/Kconfig"
