@@ -2,4 +2,6 @@
 #
 menu "Base Libc configuration"
 
+source "lib/base/arch/Kconfig"
+
 endmenu

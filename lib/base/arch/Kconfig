@@ -1,0 +1,2 @@
+
+source "lib/base/arch/$(ARCH)/Kconfig"
