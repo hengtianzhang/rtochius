@@ -180,6 +180,8 @@ include(${RTOCHIUS_BASE}/cmake/dts.cmake)
 set(CMAKE_PREFIX_PATH ${RTOCHIUS_BASE} CACHE PATH "")
 list(APPEND CMAKE_PREFIX_PATH ${RTOCHIUS_BASE}/kernel/librtochius)
 
+set(RTOCHIUS_VERSION_STRING "\"${RTOCHIUS_VERSION_STRING}${CONFIG_LOCALVERSION}\"")
+
 configure_file(${RTOCHIUS_BASE}/version.h.in ${APPLICATION_BINARY_DIR}/include/generated/version.h)
 
 set(KERNEL_SOURCE_DIR ${RTOCHIUS_BASE}/kernel CACHE PATH "")
