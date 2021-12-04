@@ -1,4 +1,0 @@
-void aa(void)
-{
-
-}
