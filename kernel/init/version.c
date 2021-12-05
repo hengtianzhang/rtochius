@@ -1,5 +1,5 @@
 /*
- *  linux/init/version.c
+ *  kernel/init/version.c
  *
  *  Copyright (C) 1992  Theodore Ts'o
  *
