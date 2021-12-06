@@ -48,7 +48,7 @@
 	__HEAD
 _head:
 	/*
-	 * DO NOT MODIFY. Image header expected by Minix-rt boot-loaders.
+	 * DO NOT MODIFY. Image header expected by Rtochius boot-loaders.
 	 */
 	b stext				// branch to kernel start, magic
 	.long	0			// reserved
