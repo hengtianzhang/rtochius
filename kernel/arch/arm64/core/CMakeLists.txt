@@ -3,7 +3,7 @@
 kernel_library()
 
 kernel_library_sources(
-	head.S extable.c
+	head.S entry.S extable.c setup.c smp.c
 )
 
 set_property(GLOBAL PROPERTY LINKER_SCRIPT_S "${CMAKE_CURRENT_LIST_DIR}/linker.lds.S")

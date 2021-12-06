@@ -19,6 +19,8 @@
 #ifndef __ASM_KERNEL_PGTABLE_H_
 #define __ASM_KERNEL_PGTABLE_H_
 
+#include <asm/base/page-def.h>
+
 #include <asm/memory.h>
 #include <asm/pgtable-hwdef.h>
 

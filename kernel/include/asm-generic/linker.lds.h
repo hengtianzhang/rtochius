@@ -184,6 +184,15 @@
 	. = ALIGN(align);						\
 	*(.data..cacheline_aligned)
 
+#define INIT_TASK_DATA(align)						\
+	. = ALIGN(align);						\
+	__start_init_task = .;						\
+	init_thread_union = .;						\
+	init_stack = .;							\
+	KEEP(*(.data..init_task))					\
+	. = __start_init_task + THREAD_SIZE;				\
+	__end_init_task = .;
+
 #define READ_MOSTLY_DATA(align)						\
 	. = ALIGN(align);						\
 	*(.data..read_mostly)						\
@@ -224,9 +233,10 @@
 		PERCPU_INPUT(cacheline)					\
 	}
 
-#define RW_DATA_SECTION(cacheline, pagealigned)		\
+#define RW_DATA_SECTION(cacheline, pagealigned, inittask)		\
 	. = ALIGN(PAGE_SIZE);						\
 	.data : AT(ADDR(.data) - LOAD_OFFSET) {				\
+		INIT_TASK_DATA(inittask)				\
 		PAGE_ALIGNED_DATA(pagealigned)				\
 		CACHELINE_ALIGNED_DATA(cacheline)			\
 		READ_MOSTLY_DATA(cacheline)				\

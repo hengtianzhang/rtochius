@@ -79,4 +79,11 @@
 
 #define THREAD_STACK_ALIGN	SZ_16
 
+#ifndef __ASSEMBLY__
+
+/* the actual size of a user virtual address */
+extern u64			vabits_user;
+
+#endif /* !__ASSEMBLY__ */
+
 #endif /* !__ASM_MEMORY_H_ */

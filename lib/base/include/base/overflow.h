@@ -245,7 +245,7 @@
  * Returns: number of bytes needed to represent the array or SIZE_MAX on
  * overflow.
  */
-static inline __must_check size_t array_size(size_t a, size_t b)
+static inline size_t array_size(size_t a, size_t b)
 {
 	size_t bytes;
 
@@ -267,7 +267,7 @@ static inline __must_check size_t array_size(size_t a, size_t b)
  * Returns: number of bytes needed to represent the array or SIZE_MAX on
  * overflow.
  */
-static inline __must_check size_t array3_size(size_t a, size_t b, size_t c)
+static inline size_t array3_size(size_t a, size_t b, size_t c)
 {
 	size_t bytes;
 
@@ -279,7 +279,7 @@ static inline __must_check size_t array3_size(size_t a, size_t b, size_t c)
 	return bytes;
 }
 
-static inline __must_check size_t __ab_c_size(size_t n, size_t size, size_t c)
+static inline size_t __ab_c_size(size_t n, size_t size, size_t c)
 {
 	size_t bytes;
 
