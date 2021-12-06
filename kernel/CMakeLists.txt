@@ -288,6 +288,9 @@ kernel_compile_options($<$<COMPILE_LANGUAGE:CXX>:$<TARGET_PROPERTY:compiler-cpp,
 
 # @Intent: Add extended, more specific, toolchain warning flags
 kernel_compile_options($<TARGET_PROPERTY:compiler,warning_extended>)
+# Now, warning_extended has initializer overrides prior initialization of this subobject
+# To remove it for kernel.
+kernel_cc_option(-Wno-initializer-overrides)
 
 # @Intent: Trigger an error when a declaration does not specify a type
 kernel_compile_options($<$<COMPILE_LANGUAGE:C>:$<TARGET_PROPERTY:compiler,warning_error_implicit_int>>)

@@ -46,6 +46,10 @@
 #define dma_wmb()	wmb()
 #endif
 
+#ifndef read_barrier_depends
+#define read_barrier_depends()		do { } while (0)
+#endif
+
 #ifndef __smp_mb
 #define __smp_mb()	mb()
 #endif
@@ -58,6 +62,10 @@
 #define __smp_wmb()	wmb()
 #endif
 
+#ifndef __smp_read_barrier_depends
+#define __smp_read_barrier_depends()	read_barrier_depends()
+#endif
+
 #ifndef smp_mb
 #define smp_mb()	__smp_mb()
 #endif
@@ -68,6 +76,10 @@
 
 #ifndef smp_wmb
 #define smp_wmb()	__smp_wmb()
+#endif
+
+#ifndef smp_read_barrier_depends
+#define smp_read_barrier_depends()	__smp_read_barrier_depends()
 #endif
 
 #ifndef __smp_store_mb

@@ -66,6 +66,14 @@ uservice_compile_options($<$<COMPILE_LANGUAGE:CXX>:$<TARGET_PROPERTY:compiler-cp
 
 uservice_compile_options($<$<COMPILE_LANGUAGE:C>:-fno-strict-aliasing>)
 
+# @Intent: Add the basic toolchain warning flags
+uservice_compile_options($<$<COMPILE_LANGUAGE:C>:$<TARGET_PROPERTY:compiler,warning_base>>)
+uservice_compile_options($<$<COMPILE_LANGUAGE:CXX>:$<TARGET_PROPERTY:compiler-cpp,warning_base>>)
+
+# Now, warning_extended has initializer overrides prior initialization of this subobject
+# To remove it for uservice.
+uservice_cc_option(-Wno-initializer-overrides)
+
 get_property(OPTIMIZE_FOR_NO_OPTIMIZATIONS_FLAG TARGET compiler PROPERTY no_optimization)
 get_property(OPTIMIZE_FOR_DEBUG_FLAG TARGET compiler PROPERTY optimization_debug)
 get_property(OPTIMIZE_FOR_SPEED_FLAG TARGET compiler PROPERTY optimization_speed)

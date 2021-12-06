@@ -109,7 +109,7 @@ void __write_once_size(volatile void *p, void *res, __s32 size)
 #define __WRITE_ONCE(x, val) \
 ({							\
 	union { typeof(x) __val; char __c[1]; } __u =	\
-		{ .__val = (__force typeof(x)) (val) }; \
+		{ .__val = (typeof(x)) (val) }; \
 	__write_once_size(&(x), __u.__c, sizeof(x));	\
 	__u.__val;					\
 })
