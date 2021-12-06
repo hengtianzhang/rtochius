@@ -21,6 +21,8 @@
 
 #include <base/const.h>
 
+#define PAGE_MASK		0xffff0000
+#define PAGE_SHIFT		12
 #define PAGE_SIZE		4096
 
 #endif /* !__ASM_BASE_PAGE_DEF_H_ */
