@@ -82,6 +82,10 @@ config CRC32_BIT
 
 endchoice
 
+config MEMBLOCK_REGIONS_NUM
+	int "Memblock regions number"
+	default 128
+
 config SYMBOLIC_ERRNAME
 	bool "Support symbolic error names in printf"
 	default y
@@ -90,6 +94,14 @@ config SYMBOLIC_ERRNAME
 		be able to print symbolic error names such as ENOSPC instead
 		of the number 28. It makes the kernel image slightly larger
 		(about 3KB), but can make the kernel logs easier to read.
+
+config FDT
+	bool "Device Tree and Open Firmware support"
+	help
+	  This option enables the device tree infrastructure.
+	  It is automatically selected by platforms that need it or can
+	  be enabled manually for unittests, overlays or
+	  compile-coverage.
 
 source "lib/base/arch/Kconfig"
 

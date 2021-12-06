@@ -5,7 +5,7 @@ target_sources(
 	cpio.c ctype.c string.c find_bit.c bitmap.c div64.c
 	kstrtox.c hexdump.c vsprintf.c string_helpers.c crc32.c
 	bsearch.c list_sort.c llist.c random.c rbtree.c sort.c
-	time.c timeconv.c
+	time.c timeconv.c memblock.c
 )
 
 target_sources_ifdef(CONFIG_GENERIC_HWEIGHT
@@ -25,3 +25,5 @@ target_sources_ifdef(CONFIG_SYMBOLIC_ERRNAME
 	PRIVATE
 	errname.c
 )
+
+add_subdirectory_ifdef(CONFIG_FDT fdt)
