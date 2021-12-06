@@ -92,4 +92,4 @@ typedef int endpoint_t;			/* process identifier */
 #define U64_C(x) x
 
 #endif /* !__ASSEMBLY__ */
-#endif /* !__MINIX_RT_TYPES_H_ */
+#endif /* !__BASE_TYPES_H_ */
