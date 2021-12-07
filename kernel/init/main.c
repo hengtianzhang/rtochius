@@ -13,11 +13,20 @@
 #include <base/init.h>
 #include <base/types.h>
 
+#include <rtochius/boot_stat.h>
+#include <rtochius/uts.h>
 #include <rtochius/sched/task.h>
-#include <rtochius/system_stat.h>
 #include <rtochius/smp.h>
 #include <rtochius/cpu.h>
 #include <rtochius/irqflags.h>
+
+#define COMMAND_LINE_SIZE	2048
+
+/* Untouched command line saved by arch-specific code. */
+static char __initdata boot_command_line[COMMAND_LINE_SIZE];
+
+/* Untouched saved command line (eg. for /proc) */
+char *saved_command_line;
 
 asmlinkage __visible void __init start_kernel(void)
 {
@@ -28,4 +37,6 @@ asmlinkage __visible void __init start_kernel(void)
 	local_irq_disable();
 
 	boot_cpu_init();
+	pr_notice("%s", rtochius_banner);
+	setup_arch(boot_command_line);
 }

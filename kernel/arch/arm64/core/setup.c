@@ -20,6 +20,7 @@
 #include <base/init.h>
 #include <base/cache.h>
 
+#include <rtochius/boot_stat.h>
 #include <rtochius/smp.h>
 
 #include <asm/percpu.h>
@@ -48,4 +49,8 @@ void __init smp_setup_processor_id(void)
 	set_my_cpu_offset(0);
 	pr_info("Booting Rtochius on physical CPU 0x%010lx [0x%08x]\n",
 		(unsigned long)mpidr, read_cpuid_id());
+}
+
+void __init setup_arch(char *cmdline)
+{
 }
