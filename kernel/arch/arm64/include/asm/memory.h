@@ -81,6 +81,12 @@
 
 #ifndef __ASSEMBLY__
 
+/* the virtual base of the kernel image (minus TEXT_OFFSET) */
+extern u64			kimage_vaddr;
+
+/* the offset between the kernel virtual and physical mappings */
+extern u64			kimage_voffset;
+
 /* the actual size of a user virtual address */
 extern u64			vabits_user;
 
