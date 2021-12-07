@@ -20,9 +20,32 @@
 #include <base/init.h>
 #include <base/cache.h>
 
+#include <rtochius/smp.h>
+
+#include <asm/percpu.h>
+#include <asm/cputype.h>
+#include <asm/smp_plat.h>
+
 phys_addr_t __fdt_pointer __initdata;
 
 /*
  * The recorded values of x0 .. x3 upon kernel entry.
  */
 u64 __cacheline_aligned boot_args[4];
+
+u64 __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1] = INVALID_HWID };
+
+void __init smp_setup_processor_id(void)
+{
+	u64 mpidr = read_cpuid_mpidr() & MPIDR_HWID_BITMASK;
+	cpu_logical_map(0) = mpidr;
+
+	/*
+	 * clear __my_cpu_offset on boot CPU to avoid hang caused by
+	 * using percpu variable early, for example, lockdep will
+	 * access percpu variable inside lock_release
+	 */
+	set_my_cpu_offset(0);
+	pr_info("Booting Rtochius on physical CPU 0x%010lx [0x%08x]\n",
+		(unsigned long)mpidr, read_cpuid_id());
+}
