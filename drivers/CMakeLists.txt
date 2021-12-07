@@ -1,2 +1,2 @@
 
-add_subdirectory(console)
+add_subdirectory(i2c)
