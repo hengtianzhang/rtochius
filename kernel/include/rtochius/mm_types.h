@@ -3,6 +3,11 @@
 
 #include <asm/mmu.h>
 
+struct page {
+	unsigned long flags;		/* Atomic flags, some possibly
+					 * updated asynchronously */
+};
+
 struct mm_struct {
 	/* Architecture-specific MM context */
 	mm_context_t context;

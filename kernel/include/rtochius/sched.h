@@ -1,6 +1,7 @@
 #ifndef __RTOCHIUS_SCHED_H_
 #define __RTOCHIUS_SCHED_H_
 
+#include <asm/current.h>
 #include <asm/thread_info.h>
 #include <asm/processor.h>
 
@@ -23,6 +24,11 @@ struct task_struct {
 	void				*stack;
 	/* Per task flags (PF_*), defined further below: */
 	unsigned int			flags;
+
+#ifdef CONFIG_STACKPROTECTOR
+	/* Canary value for the -fstack-protector GCC feature: */
+	unsigned long			stack_canary;
+#endif
 
 	/* CPU-specific state of this task: */
 	struct thread_struct		thread;

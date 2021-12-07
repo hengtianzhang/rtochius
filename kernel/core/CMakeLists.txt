@@ -1,4 +1,4 @@
 
-kernel_sources(test.c)
+kernel_sources(printf.c panic.c)
 
 add_subdirectory(time)

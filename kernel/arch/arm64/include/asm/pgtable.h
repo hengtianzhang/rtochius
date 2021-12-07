@@ -16,10 +16,14 @@
 #ifndef __ASM_PGTABLE_H_
 #define __ASM_PGTABLE_H_
 
+#ifndef __ASSEMBLY__
+
 #include <asm/memory.h>
+#include <asm/pgtable-types.h>
+#include <asm/pgtable-hwdef.h>
 #include <asm/kernel-pgtable.h>
 
-#ifndef __ASSEMBLY__
+#define vmemmap			((struct page *)VMEMMAP_START - (memstart_addr >> PAGE_SHIFT))
 
 extern pgd_t init_pg_dir[PTRS_PER_PGD];
 extern pgd_t init_pg_end[];

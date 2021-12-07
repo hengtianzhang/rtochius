@@ -81,6 +81,16 @@
 
 #ifndef __ASSEMBLY__
 
+#include <base/pfn.h>
+#include <base/bits.h>
+#include <base/common.h>
+
+#include <asm/pgtable.h>
+
+extern s64			memstart_addr;
+/* PHYS_OFFSET - the physical address of the start of memory. */
+#define PHYS_OFFSET		({ BUG_ON(memstart_addr & 1); memstart_addr; })
+
 /* the virtual base of the kernel image (minus TEXT_OFFSET) */
 extern u64			kimage_vaddr;
 
@@ -90,6 +100,80 @@ extern u64			kimage_voffset;
 /* the actual size of a user virtual address */
 extern u64			vabits_user;
 
-#endif /* !__ASSEMBLY__ */
 
+/*
+ * PFNs are used to describe any physical page; this means
+ * PFN 0 == physical address 0.
+ *
+ * This is the PFN of the first RAM page in the kernel
+ * direct-mapped view.  We assume this is the first page
+ * of RAM in the mem_map as well.
+ */
+#define PHYS_PFN_OFFSET	(PHYS_OFFSET >> PAGE_SHIFT)
+
+/*
+ * The linear kernel range starts in the middle of the virtual adddress
+ * space. Testing the top bit for the start of the region is a
+ * sufficient check.
+ */
+#define __is_lm_address(addr)	(!!((addr) & BIT(VA_BITS - 1)))
+
+#define __lm_to_phys(addr)	(((addr) & ~PAGE_OFFSET) + PHYS_OFFSET)
+#define __kimg_to_phys(addr)	((addr) - kimage_voffset)
+
+#define __virt_to_phys(x) ({					\
+	phys_addr_t __x = (phys_addr_t)(x);				\
+	__is_lm_address(__x) ? __lm_to_phys(__x) :			\
+			       __kimg_to_phys(__x);			\
+})
+
+#define __phys_addr_symbol(x) __kimg_to_phys((phys_addr_t)(x))
+
+#define __phys_to_virt(x)	((unsigned long)((x) - PHYS_OFFSET) | PAGE_OFFSET)
+#define __phys_to_kimg(x)	((unsigned long)((x) + kimage_voffset))
+
+/* memmap is virtually contiguous.  */
+#define __pfn_to_page(pfn)	(vmemmap + (pfn))
+#define __page_to_pfn(page)	(unsigned long)((page) - vmemmap)
+
+#define page_to_pfn __page_to_pfn
+#define pfn_to_page __pfn_to_page
+
+/*
+ * Convert a page to/from a physical address
+ */
+#define page_to_phys(page)	(__pfn_to_phys(page_to_pfn(page)))
+#define phys_to_page(phys)	(pfn_to_page(__phys_to_pfn(phys)))
+#define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
+
+/*
+ * Note: Drivers should NOT use these.  They are the wrong
+ * translation for translating DMA addresses.  Use the driver
+ * DMA support - see dma-mapping.h.
+ */
+#define virt_to_phys virt_to_phys
+static inline phys_addr_t virt_to_phys(const volatile void *x)
+{
+	return __virt_to_phys((unsigned long)(x));
+}
+
+#define phys_to_virt phys_to_virt
+static inline void *phys_to_virt(phys_addr_t x)
+{
+	return (void *)(__phys_to_virt(x));
+}
+
+#define __pa(x)			__virt_to_phys((unsigned long)(x))
+#define __pa_symbol(x)		__phys_addr_symbol(RELOC_HIDE((unsigned long)(x), 0))
+#define __va(x)			((void *)__phys_to_virt((phys_addr_t)(x)))
+#define virt_to_pfn(x)      __phys_to_pfn(__virt_to_phys((unsigned long)(x)))
+
+extern int pfn_valid(unsigned long);
+
+#define _virt_addr_is_linear(kaddr)	\
+	((u64)(kaddr) >= PAGE_OFFSET)
+#define virt_addr_valid(kaddr)		\
+	(_virt_addr_is_linear(kaddr) && (pfn_valid(__pa(kaddr) >> PAGE_SHIFT)))
+
+#endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_MEMORY_H_ */
