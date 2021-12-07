@@ -3,7 +3,7 @@
  *
  * (C) Jens Axboe <jens.axboe@oracle.com> 2008
  */
-#define pr_fmt(fmt) "SMP" ": " fmt
+#define pr_fmt(fmt) "smp" ": " fmt
 
 #include <base/cache.h>
 

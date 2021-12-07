@@ -2,7 +2,7 @@
 kernel_interface_library()
 
 kernel_interface_library_sources(
-    test.c
+    cpumask.c
 )
 
 kernel_interface_library_sources_ifdef(

@@ -19,7 +19,12 @@
 #include <base/types.h>
 #include <base/linkage.h>
 
+#include <rtochius/smp.h>
+#include <rtochius/percpu.h>
+
 #include <asm/smp.h>
+
+DEFINE_PER_CPU_READ_MOSTLY(int, cpu_number);
 
 struct secondary_data secondary_data;
 

@@ -16,6 +16,7 @@
 #include <rtochius/sched/task.h>
 #include <rtochius/system_stat.h>
 #include <rtochius/smp.h>
+#include <rtochius/cpu.h>
 #include <rtochius/irqflags.h>
 
 asmlinkage __visible void __init start_kernel(void)
@@ -25,4 +26,6 @@ asmlinkage __visible void __init start_kernel(void)
 	smp_setup_processor_id();
 
 	local_irq_disable();
+
+	boot_cpu_init();
 }
