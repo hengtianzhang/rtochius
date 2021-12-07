@@ -16,6 +16,8 @@
 #ifndef __RTOCHIUS_PERCPU_DEFS_H_
 #define __RTOCHIUS_PERCPU_DEFS_H_
 
+#include <asm/cache.h>
+
 #define __percpu
 
 #define PER_CPU_BASE_SECTION ".data..percpu"

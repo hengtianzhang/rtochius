@@ -41,5 +41,31 @@ struct thread_struct {
 	struct cpu_context	cpu_context;	/* cpu context */
 };
 
+static inline void cpu_relax(void)
+{
+	asm volatile("yield" ::: "memory");
+}
+
+/*
+ * Prefetching support
+ */
+#define ARCH_HAS_PREFETCH
+static inline void prefetch(const void *ptr)
+{
+	asm volatile("prfm pldl1keep, %a0\n" : : "p" (ptr));
+}
+
+#define ARCH_HAS_PREFETCHW
+static inline void prefetchw(const void *ptr)
+{
+	asm volatile("prfm pstl1keep, %a0\n" : : "p" (ptr));
+}
+
+#define ARCH_HAS_SPINLOCK_PREFETCH
+static inline void spin_lock_prefetch(const void *ptr)
+{
+	asm volatile("prfm pstl1strm, %a0" : : "p" (ptr));
+}
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_PROCESSOR_H_ */

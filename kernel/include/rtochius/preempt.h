@@ -5,4 +5,10 @@
 #define preempt_disable()
 #define preempt_enable()
 
+#define in_interrupt()		(0)
+
+#define preempt_count_add(x)
+
+#define SOFTIRQ_LOCK_OFFSET (1)
+
 #endif /* !__RTOCHIUS_PREEMPT_H_ */
