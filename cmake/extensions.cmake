@@ -1829,8 +1829,3 @@ macro(rtochius_import_syslibs_boilerplate lib_name)
 		endif()
 	endfunction()
 endmacro()
-
-function(platform_add_dts_file dtsfile)
-	set_property(GLOBAL APPEND PROPERTY PLATEFORM_DTS_FILES ${dtsfile})
-	set_property(GLOBAL PROPERTY PLATEFORM_DTS_FILES_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-endfunction()

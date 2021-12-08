@@ -5,6 +5,7 @@
  * Device Tree file for the Armada 8020 SoC, made of an AP806 Dual and
  * two CP110.
  */
+/dts-v1/;
 / {
 	model = "Arch Origin platform";
 	compatible = "arch,origin";
