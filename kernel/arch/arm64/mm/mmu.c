@@ -43,6 +43,8 @@ u64 vabits_user __ro_after_init;
 
 u64 kimage_voffset __ro_after_init;
 
+bool rodata_full __ro_after_init = IS_ENABLED(CONFIG_RODATA_FULL_DEFAULT_ENABLED);
+
 /*
  * Empty_zero_page is a special page that is used for zero-initialized data
  * and COW.
