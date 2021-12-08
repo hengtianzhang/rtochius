@@ -1,0 +1,14 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (C) 2016 Marvell Technology Group Ltd.
+ *
+ * Device Tree file for the Armada 8020 SoC, made of an AP806 Dual and
+ * two CP110.
+ */
+/ {
+	model = "Arch Origin platform";
+	compatible = "arch,origin";
+
+	#address-cells = <2>;
+	#size-cells = <2>;
+};

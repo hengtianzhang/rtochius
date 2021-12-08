@@ -1,0 +1,2 @@
+
+add_subdirectory_ifdef(CONFIG_ARCH_ORIGIN origin)
