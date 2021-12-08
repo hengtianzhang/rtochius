@@ -24,8 +24,6 @@
 #include <asm/base/byteorder.h>
 #include <asm/base/barrier.h>
 
-#define __iomem
-
 /*
  * Generic IO read/write.  These perform native-endian accesses.
  */

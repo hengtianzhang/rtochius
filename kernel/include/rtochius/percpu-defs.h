@@ -18,8 +18,6 @@
 
 #include <asm/cache.h>
 
-#define __percpu
-
 #define PER_CPU_BASE_SECTION ".data..percpu"
 
 #define PER_CPU_SHARED_ALIGNED_SECTION "..shared_aligned"
