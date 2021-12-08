@@ -22,10 +22,12 @@
 
 #include <rtochius/boot_stat.h>
 #include <rtochius/smp.h>
+#include <rtochius/memory.h>
 
 #include <asm/percpu.h>
 #include <asm/cputype.h>
 #include <asm/smp_plat.h>
+#include <asm/fixmap.h>
 
 phys_addr_t __fdt_pointer __initdata;
 
@@ -53,4 +55,7 @@ void __init smp_setup_processor_id(void)
 
 void __init setup_arch(char *cmdline)
 {
+	memblock_init(&memblock_kernel);
+
+ 	early_fixmap_init();
 }
