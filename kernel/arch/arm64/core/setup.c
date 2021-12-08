@@ -28,6 +28,7 @@
 #include <asm/cputype.h>
 #include <asm/smp_plat.h>
 #include <asm/fixmap.h>
+#include <asm/processor.h>
 
 phys_addr_t __fdt_pointer __initdata;
 
@@ -53,9 +54,17 @@ void __init smp_setup_processor_id(void)
 		(unsigned long)mpidr, read_cpuid_id());
 }
 
+static void __init setup_machine_fdt(phys_addr_t dt_phys)
+{
+	void *dt_virt = fixmap_remap_fdt(dt_phys);
+	const char *name;
+}
+
 void __init setup_arch(char *cmdline)
 {
 	memblock_init(&memblock_kernel);
 
  	early_fixmap_init();
+
+    setup_machine_fdt(__fdt_pointer);
 }
