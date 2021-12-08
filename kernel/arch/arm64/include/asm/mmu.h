@@ -41,6 +41,8 @@ extern void mark_linear_text_alias_ro(void);
 extern void *__fixmap_remap_fdt(phys_addr_t dt_phys, int *size, pgprot_t prot);
 extern void *fixmap_remap_fdt(phys_addr_t dt_phys);
 
+extern void vmemmap_populate(phys_addr_t phys, unsigned long virt, size_t size);
+
 #define INIT_MM_CONTEXT(name)	\
 	.pgd = init_pg_dir,
 

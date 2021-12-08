@@ -362,6 +362,32 @@ static void __init create_mapping_noalloc(phys_addr_t phys, unsigned long virt,
 			     NO_CONT_MAPPINGS);
 }
 
+void __init vmemmap_populate(phys_addr_t phys, unsigned long virt,
+				      size_t size)
+{
+	BUG_ON(!PAGE_ALIGNED(virt));
+	BUG_ON(!PAGE_ALIGNED(phys));
+	BUG_ON(!PAGE_ALIGNED(size));
+
+	__create_pgd_mapping(init_mm.pgd, phys, virt, size, PAGE_KERNEL,
+							early_pgtable_alloc, 0);
+}
+
+int __init __create_iomap_remap(phys_addr_t phys_addr, u64 virt,
+					size_t size, pgprot_t prot, int flags)
+{
+	if (virt < VIOMAP_START || (virt + size) > (VIOMAP_START + VIOMAP_SIZE)) {
+		pr_err("Not creating IO mapping for 0x%016llx at 0x%016llx - outside kernel range\n",
+			phys_addr, virt);
+		return -ENOMEM;
+	}
+
+	__create_pgd_mapping(init_mm.pgd, phys_addr, virt, size, prot,
+			     early_pgtable_alloc, flags);
+
+	return 0;
+}
+
 static void update_mapping_prot(phys_addr_t phys, unsigned long virt,
 				phys_addr_t size, pgprot_t prot)
 {
