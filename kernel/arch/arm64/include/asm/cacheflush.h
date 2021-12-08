@@ -19,6 +19,12 @@
 #ifndef __ASM_CACHEFLUSH_H_
 #define __ASM_CACHEFLUSH_H_
 
+/*
+ * This flag is used to indicate that the page pointed to by a pte is clean
+ * and does not require cleaning before returning it to the user.
+ */
+#define PG_dcache_clean PG_arch_1
+
 extern void __flush_icache_range(unsigned long start, unsigned long end);
 
 /*
@@ -29,6 +35,8 @@ extern void __flush_icache_range(unsigned long start, unsigned long end);
  *		- end    - virtual end address
  */
 extern int invalidate_icache_range(unsigned long start, unsigned long end);
+
+extern void sync_icache_aliases(void *kaddr, unsigned long len);
 
 /*
  *	__flush_dcache_area(kaddr, size)
@@ -63,5 +71,65 @@ extern void __dma_inv_area(void *addr, size_t len);
 extern void __dma_map_area(const void *, size_t, int);
 extern void __dma_unmap_area(const void *, size_t, int);
 extern void __dma_flush_area(const void *, size_t);
+
+/*
+ *	flush_cache_mm(mm)
+ *
+ *		Clean and invalidate all user space cache entries
+ *		before a change of page tables.
+ */
+static inline void flush_cache_mm(struct mm_struct *mm)
+{
+}
+
+static inline void flush_cache_page(struct vm_area_struct *vma,
+				    unsigned long user_addr, unsigned long pfn)
+{
+}
+
+static inline void flush_cache_range(struct vm_area_struct *vma,
+				     unsigned long start, unsigned long end)
+{
+}
+
+/*
+ * Copy user data from/to a page which is mapped into a different
+ * processes address space.  Really, we want to allow our "user
+ * space" model to handle this.
+ */
+extern void copy_to_user_page(struct vm_area_struct *, struct page *,
+	unsigned long, void *, const void *, unsigned long);
+#define copy_from_user_page(vma, page, vaddr, dst, src, len) \
+	do {							\
+		memcpy(dst, src, len);				\
+	} while (0)
+
+#define flush_cache_dup_mm(mm) flush_cache_mm(mm)
+
+static inline void __flush_icache_all(void)
+{
+	asm("ic	ialluis");
+	dsb(ish);
+}
+
+/*
+ * flush_dcache_page is used when the kernel has written to the page
+ * cache page at virtual address page->virtual.
+ *
+ * If this page isn't mapped (ie, page_mapping == NULL), or it might
+ * have userspace mappings, then we _must_ always clean + invalidate
+ * the dcache entries associated with the kernel mapping.
+ *
+ * Otherwise we can defer the operation, and clean the cache when we are
+ * about to change to user space.  This is the same method as used on SPARC64.
+ * See update_mmu_cache for the user space part.
+ */
+extern void flush_dcache_page(struct page *);
+
+/*
+ * We don't appear to need to do anything here.  In fact, if we did, we'd
+ * duplicate cache flushing elsewhere performed by flush_dcache_page().
+ */
+#define flush_icache_page(vma,page)	do { } while (0)
 
 #endif /* !__ASM_CACHEFLUSH_H_ */

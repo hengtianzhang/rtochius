@@ -1,7 +1,7 @@
 /*
- * Based on arch/arm/mm/context.c
+ * Based on arch/arm/kernel/traps.c
  *
- * Copyright (C) 2002-2003 Deep Blue Solutions Ltd, all rights reserved.
+ * Copyright (C) 1995-2009 Russell King
  * Copyright (C) 2012 ARM Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,22 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <base/types.h>
-#include <base/linkage.h>
-#include <base/overflow.h>
+#include <base/common.h>
 
-#include <asm/mmu_context.h>
+#include <asm/pgtable.h>
 
-/* Errata workaround post TTBRx_EL1 update. */
-asmlinkage void post_ttbr_update_workaround(void)
+void __pte_error(const char *file, int line, unsigned long val)
 {
-	asm("nop; nop; nop");
+	pr_err("%s:%d: bad pte %016lx.\n", file, line, val);
 }
 
-void check_and_switch_context(struct mm_struct *mm, unsigned int cpu)
-{}
-
-/* Check if the current cpu's ASIDBits is compatible with asid_bits */
-void verify_cpu_asid_bits(void)
+void __pmd_error(const char *file, int line, unsigned long val)
 {
+	pr_err("%s:%d: bad pmd %016lx.\n", file, line, val);
+}
+
+void __pud_error(const char *file, int line, unsigned long val)
+{
+	pr_err("%s:%d: bad pud %016lx.\n", file, line, val);
+}
+
+void __pgd_error(const char *file, int line, unsigned long val)
+{
+	pr_err("%s:%d: bad pgd %016lx.\n", file, line, val);
 }

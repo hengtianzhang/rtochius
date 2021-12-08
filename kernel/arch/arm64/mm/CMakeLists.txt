@@ -3,5 +3,6 @@
 kernel_library()
 
 kernel_library_sources(
-	cache.S proc.S mmu.c context.c
+	cache.S proc.S flush.c mmu.c pageattr.c
+	copypage.c pgd.c context.c
 )

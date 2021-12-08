@@ -3,5 +3,5 @@
 kernel_interface_library()
 
 kernel_interface_library_sources(
-	test.c
+	copy_page.S clear_page.S
 )

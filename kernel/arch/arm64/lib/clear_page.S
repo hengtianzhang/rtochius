@@ -1,7 +1,4 @@
 /*
- * Based on arch/arm/mm/context.c
- *
- * Copyright (C) 2002-2003 Deep Blue Solutions Ltd, all rights reserved.
  * Copyright (C) 2012 ARM Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,22 +13,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <base/types.h>
+
 #include <base/linkage.h>
-#include <base/overflow.h>
+#include <base/const.h>
 
-#include <asm/mmu_context.h>
+#include <asm/assembler.h>
+#include <asm/page.h>
 
-/* Errata workaround post TTBRx_EL1 update. */
-asmlinkage void post_ttbr_update_workaround(void)
-{
-	asm("nop; nop; nop");
-}
+/*
+ * Clear page @dest
+ *
+ * Parameters:
+ *	x0 - dest
+ */
+ENTRY(clear_page)
+	mrs	x1, dczid_el0
+	and	w1, w1, #0xf
+	mov	x2, #4
+	lsl	x1, x2, x1
 
-void check_and_switch_context(struct mm_struct *mm, unsigned int cpu)
-{}
-
-/* Check if the current cpu's ASIDBits is compatible with asid_bits */
-void verify_cpu_asid_bits(void)
-{
-}
+1:	dc	zva, x0
+	add	x0, x0, x1
+	tst	x0, #(PAGE_SIZE - 1)
+	b.ne	1b
+	ret
+ENDPROC(clear_page)

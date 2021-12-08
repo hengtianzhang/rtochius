@@ -1,5 +1,5 @@
 kernel_library()
 
 kernel_library_sources(
-	mmap.c percpu.c
+	init-mm.c pgtable-generic.c mmap.c percpu.c
 )

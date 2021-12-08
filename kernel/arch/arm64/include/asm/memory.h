@@ -85,8 +85,6 @@
 #include <base/bits.h>
 #include <base/common.h>
 
-#include <asm/pgtable.h>
-
 extern s64			memstart_addr;
 /* PHYS_OFFSET - the physical address of the start of memory. */
 #define PHYS_OFFSET		({ BUG_ON(memstart_addr & 1); memstart_addr; })

@@ -3,8 +3,7 @@
 
 #include <base/compiler.h>
 
-#include <asm/base/page-def.h>
-
+#include <asm/page.h>
 
 /*
  * For assembly routines.
