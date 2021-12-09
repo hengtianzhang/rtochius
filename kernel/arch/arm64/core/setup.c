@@ -24,6 +24,7 @@
 #include <rtochius/smp.h>
 #include <rtochius/memory.h>
 #include <rtochius/cpu.h>
+#include <rtochius/dump_stack.h>
 
 #include <asm/percpu.h>
 #include <asm/cputype.h>
@@ -60,10 +61,33 @@ bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
 	return phys_id == cpu_logical_map(cpu);
 }
 
+static void __init setup_fixmap_console(void)
+{
+	early_init_dt_scan_chosen_stdout();
+}
+
 static void __init setup_machine_fdt(phys_addr_t dt_phys)
 {
 	void *dt_virt = fixmap_remap_fdt(dt_phys);
 	const char *name;
+
+	if (!dt_virt || !early_init_dt_scan(dt_virt)) {
+		pr_crit("\n"
+			"Error: invalid device tree blob at physical address %pa (virtual address 0x%p)\n"
+			"The dtb must be 8-byte aligned and must not exceed 2 MB in size\n"
+			"\nPlease check your bootloader.",
+			&dt_phys, dt_virt);
+
+		while (true)
+			cpu_relax();
+	}
+
+	name = of_flat_dt_get_machine_name();
+	if (!name)
+		return;
+
+	pr_info("Machine model: %s\n", name);
+	dump_stack_set_arch_desc("%s (DT)", name);
 }
 
 void __init setup_arch(char *cmdline)
@@ -73,4 +97,6 @@ void __init setup_arch(char *cmdline)
  	early_fixmap_init();
 
     setup_machine_fdt(__fdt_pointer);
+
+	setup_fixmap_console();
 }
