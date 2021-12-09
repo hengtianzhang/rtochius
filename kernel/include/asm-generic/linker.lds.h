@@ -139,6 +139,11 @@
 
 #define RO_DATA(align)  RO_DATA_SECTION(align)
 
+#define EARLYCON_TABLE() . = ALIGN(8);				\
+			 __earlycon_table = .;			\
+			 KEEP(*(__earlycon_table))		\
+			 __earlycon_table_end = .;
+
 #define OF_TABLE(name)						\
 	. = ALIGN(8);							\
 	__##name##_of_table_start = .;					\
@@ -146,7 +151,6 @@
 	KEEP(*(__##name##_of_table_end))					\
 	__##name##_of_table_end = .;
 
-#define CONSOLE_OF_TABLES() OF_TABLE(console)
 #define CLK_OF_TABLES()		OF_TABLE(clk)
 #define TIMER_OF_TABLES()	OF_TABLE(timer)
 #define IRQCHIP_OF_MATCH_TABLE() OF_TABLE(irqchip)
@@ -155,7 +159,7 @@
 #define INIT_DATA							\
 	*(.init.data init.data.*)					\
 	*(.init.rodata .init.rodata.*)					\
-	CONSOLE_OF_TABLES()						\
+	EARLYCON_TABLE()						\
 	CLK_OF_TABLES()							\
 	TIMER_OF_TABLES()						\
 	IRQCHIP_OF_MATCH_TABLE()

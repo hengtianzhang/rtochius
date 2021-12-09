@@ -31,4 +31,6 @@
     file under either the MPL or the GPL.
 
 ======================================================================*/
+#include <base/common.h>
+
 #include <rtochius/serial.h>
