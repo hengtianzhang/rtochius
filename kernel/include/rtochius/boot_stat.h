@@ -3,6 +3,9 @@
 
 #include <base/linkage.h>
 
+#define COMMAND_LINE_SIZE	2048
+
+extern char boot_command_line[COMMAND_LINE_SIZE];
 extern char *saved_command_line;
 
 extern asmlinkage void start_kernel(void);

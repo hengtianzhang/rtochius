@@ -20,10 +20,8 @@
 #include <rtochius/cpu.h>
 #include <rtochius/irqflags.h>
 
-#define COMMAND_LINE_SIZE	2048
-
 /* Untouched command line saved by arch-specific code. */
-static char __initdata boot_command_line[COMMAND_LINE_SIZE];
+char __initdata boot_command_line[COMMAND_LINE_SIZE];
 
 /* Untouched saved command line (eg. for /proc) */
 char *saved_command_line;
