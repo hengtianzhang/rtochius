@@ -3,9 +3,13 @@
 kernel_library()
 
 kernel_library_sources(
-	base.c
+	base.c property.c device.c
 )
 
 kernel_library_sources_ifdef(CONFIG_OF_FLATTREE
 	fdt.c
+)
+
+kernel_library_sources_ifdef(CONFIG_OF_RESERVED_MEM
+	of_reserved_mem.c
 )

@@ -23,6 +23,7 @@
 #include <rtochius/boot_stat.h>
 #include <rtochius/smp.h>
 #include <rtochius/memory.h>
+#include <rtochius/cpu.h>
 
 #include <asm/percpu.h>
 #include <asm/cputype.h>
@@ -52,6 +53,11 @@ void __init smp_setup_processor_id(void)
 	set_my_cpu_offset(0);
 	pr_info("Booting Rtochius on physical CPU 0x%010lx [0x%08x]\n",
 		(unsigned long)mpidr, read_cpuid_id());
+}
+
+bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
+{
+	return phys_id == cpu_logical_map(cpu);
 }
 
 static void __init setup_machine_fdt(phys_addr_t dt_phys)

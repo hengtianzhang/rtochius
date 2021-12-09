@@ -9,6 +9,7 @@
 #include <rtochius/cpu.h>
 #include <rtochius/smp.h>
 #include <rtochius/cpumask.h>
+#include <rtochius/device.h>
 
 struct cpumask __cpu_possible_mask __read_mostly;
 struct cpumask __cpu_present_mask __read_mostly;
@@ -31,4 +32,33 @@ void __init boot_cpu_init(void)
 	set_cpu_online(cpu, true);
 
 	__boot_cpu_id = cpu;
+}
+
+static DEFINE_PER_CPU(struct device *, cpu_sys_devices);
+
+struct device *get_cpu_device(unsigned cpu)
+{
+	if (cpu < nr_cpu_ids && cpu_possible(cpu))
+		return per_cpu(cpu_sys_devices, cpu);
+	else
+		return NULL;
+}
+
+/*
+ * register_cpu - Setup a sysfs device for a CPU.
+ * @cpu - cpu->hotpluggable field set to 1 will generate a control file in
+ *	  sysfs for this CPU.
+ * @num - CPU number to use when creating the device.
+ *
+ * Initialize and register the CPU device.
+ */
+int register_cpu(struct cpu *cpu, int num)
+{
+	cpu->node_id = num;
+	memset(&cpu->dev, 0x00, sizeof(struct device));
+	cpu->dev.of_node = of_get_cpu_node(num, NULL);
+
+	per_cpu(cpu_sys_devices, num) = &cpu->dev;
+
+	return 0;
 }

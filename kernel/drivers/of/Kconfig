@@ -13,4 +13,10 @@ config OF_FLATTREE
 	bool "Device Tree flattree"
 	default n
 
+config OF_RESERVED_MEM
+	depends on OF_FLATTREE
+	bool
+	help
+	  Helpers to allow for reservation of memory regions
+
 endif

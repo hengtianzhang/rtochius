@@ -10,6 +10,7 @@ config ARM64
 	select FRAME_POINTER
 	select HAVE_STACKPROTECTOR
 	select OF
+	select OF_RESERVED_MEM
 
 config 64BIT
 	def_bool y
