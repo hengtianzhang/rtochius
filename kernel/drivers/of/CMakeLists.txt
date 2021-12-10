@@ -7,7 +7,7 @@ kernel_library_sources(
 )
 
 kernel_library_sources_ifdef(CONFIG_OF_FLATTREE
-	fdt.c
+	fdt.c fdt_address.c
 )
 
 kernel_library_sources_ifdef(CONFIG_OF_RESERVED_MEM

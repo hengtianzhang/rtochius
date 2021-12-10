@@ -5,7 +5,10 @@
 
 #ifndef __ASSEMBLY__
 
+#include <rtochius/mm_types.h>
+
 #include <asm/boot.h>
+#include <asm/pgtable-prot.h>
 #include <asm/kernel-pgtable.h>
 #include <asm/memory.h>
 

@@ -11,7 +11,10 @@
 
 #include <base/types.h>
 
+#include <rtochius/spinlock.h>
 #include <rtochius/of.h>
+
+#include <uapi/rtochius/serial.h>
 
 /*
  * Console helpers.
@@ -19,12 +22,26 @@
 struct earlycon_device {
 	char	name[15];
 	char	compatible[128];
+
 	void	(*write)(struct earlycon_device *, const char *, unsigned int);
+
+	unsigned char		regshift;		/* reg offset shift */
+	unsigned char		iotype;			/* io access style */
+
+	resource_size_t		mapbase;
 	unsigned long		iobase;			/* in/out[bwl] */
 	unsigned char __iomem	*membase;		/* read/write[bwl] */
+
 	char options[16];		/* e.g., 115200n8 */
 	unsigned int baud;
 	unsigned int clk;
+
+	short	index;
+
+	char	available;
+
+	spinlock_t		lock;			/* port lock */
+
 	void	*private_data;
 };
 
@@ -53,5 +70,13 @@ extern const struct earlycon_id *__earlycon_table_end[];
 #define OF_EARLYCON_DECLARE(_name, compat, fn)				\
 	_OF_EARLYCON_DECLARE(_name, compat, fn,				\
 			     __UNIQUE_ID(__earlycon_##_name))
+
+extern int of_setup_earlycon(const struct earlycon_id *match,
+			     unsigned long node,
+			     const char *options);
+
+extern bool earlycon_device_available(void);
+
+extern void earlycon_write(const char *s, unsigned int count);
 
 #endif /* !__RTOCHIUS_SERIAL_H_ */

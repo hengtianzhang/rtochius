@@ -44,7 +44,7 @@ static ssize_t of_device_get_modalias(struct device *dev, char *str, ssize_t len
 
 	/* Name & Type */
 	/* %p eats all alphanum characters, so %c must be used here */
-	csize = snprintf(str, len, "of:N%pOFn%c%s", dev->of_node, 'T',
+	csize = snprintf(str, len, "of:N%pn%c%s", dev->of_node, 'T',
 			 of_node_get_device_type(dev->of_node));
 	tsize = csize;
 	len -= csize;
