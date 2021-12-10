@@ -287,7 +287,7 @@ static int __init pl01x_early_console_setup(struct earlycon_device *device,
 		return -ENODEV;
 
 	pl01x_data.base_regs = (struct pl01x_regs *)device->membase;
-	if (strncmp(device->compatible, "arm,pl011", strlen("arm,pl011") == 0))
+	if (strncmp(device->compatible, "arm,pl011", strlen("arm,pl011")) == 0)
 		pl01x_data.pl01x_type = TYPE_PL011;
 	else
 		pl01x_data.pl01x_type = TYPE_PL010;

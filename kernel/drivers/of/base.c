@@ -1792,7 +1792,7 @@ int of_alias_get_highest_id(const char *stem)
 const char *of_console_check(struct device_node *dn, char *name, int index)
 {
 	if (!dn || dn != of_stdout)
-		return false;
+		return NULL;
 
 	/*
 	 * XXX: cast `options' to char pointer to suppress complication

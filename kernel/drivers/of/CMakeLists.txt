@@ -3,7 +3,7 @@
 kernel_library()
 
 kernel_library_sources(
-	base.c property.c device.c
+	base.c property.c device.c address.c
 )
 
 kernel_library_sources_ifdef(CONFIG_OF_FLATTREE
