@@ -17,6 +17,8 @@
  * Console helpers.
  */
 struct earlycon_device {
+	char	name[15];
+	char	compatible[128];
 	void	(*write)(struct earlycon_device *, const char *, unsigned int);
 	unsigned long		iobase;			/* in/out[bwl] */
 	unsigned char __iomem	*membase;		/* read/write[bwl] */

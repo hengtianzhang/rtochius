@@ -280,14 +280,17 @@ static void __init pl01x_console_init(struct earlycon_device *dev)
 	pl01x_generic_setbrg(regs, data->pl01x_type, dev->clk, dev->baud);
 }
 
-static int __init pl011_early_console_setup(struct earlycon_device *device,
+static int __init pl01x_early_console_setup(struct earlycon_device *device,
 					    const char *opt)
 {
 	if (!device->membase)
 		return -ENODEV;
 
 	pl01x_data.base_regs = (struct pl01x_regs *)device->membase;
-	pl01x_data.pl01x_type = TYPE_PL011;
+	if (strncmp(device->compatible, "arm,pl011", strlen("arm,pl011") == 0))
+		pl01x_data.pl01x_type = TYPE_PL011;
+	else
+		pl01x_data.pl01x_type = TYPE_PL010;
 
 	device->write = pl01x_early_write;
 	device->private_data = (void *)&pl01x_data;
@@ -296,22 +299,5 @@ static int __init pl011_early_console_setup(struct earlycon_device *device,
 
 	return 0;
 }
-OF_EARLYCON_DECLARE(pl011, "arm,pl011", pl011_early_console_setup);
-
-static int __init pl010_early_console_setup(struct earlycon_device *device,
-					    const char *opt)
-{
-	if (!device->membase)
-		return -ENODEV;
-
-	pl01x_data.base_regs = (struct pl01x_regs *)device->membase;
-	pl01x_data.pl01x_type = TYPE_PL010;
-
-	device->write = pl01x_early_write;
-	device->private_data = (void *)&pl01x_data;
-
-	pl01x_console_init(device);
-
-	return 0;
-}
-OF_EARLYCON_DECLARE(pl010, "arm,pl010", pl010_early_console_setup);
+OF_EARLYCON_DECLARE(pl011, "arm,pl011", pl01x_early_console_setup);
+OF_EARLYCON_DECLARE(pl010, "arm,pl010", pl01x_early_console_setup);

@@ -198,6 +198,7 @@ function(make_kernel_uservice_archive output_name)
 		OUTPUT ${output_name}
 		COMMAND rm -f ${output_name}
 		COMMAND rm -f ${output_name}.cpio
+		COMMAND touch ${output_name}.cpio
 		COMMAND ${commands}
 		COMMAND ${SHELL} -c
 		"echo 'X.section .archive_uservice,\"aw\"X.globl __archive_uservice_start, \
@@ -218,6 +219,7 @@ function(make_kernel_drivers_archive output_name)
 		OUTPUT ${output_name}
 		COMMAND rm -f ${output_name}
 		COMMAND rm -f ${output_name}.cpio
+		COMMAND touch ${output_name}.cpio
 		COMMAND ${commands}
 		COMMAND ${SHELL} -c
 		"echo 'X.section .archive_drivers,\"aw\"X.globl __archive_drivers_start, \
