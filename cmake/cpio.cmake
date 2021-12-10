@@ -31,12 +31,13 @@ endfunction()
 # into another target
 function(MakeCPIO commands output_name)
     string(REGEX REPLACE ".+/(.+)\\..*" "\\1" basename ${output_name})
+    get_filename_component(output_dir ${output_name} NAME)
+    set(output_dir ${APPLICATION_BINARY_DIR}/.temp_cpio_${output_dir})
     # Check that the reproducible flag is available. Don't use it if it isn't.
     CheckCPIOArgument(cpio_reproducible_flag "--reproducible")
-    set(append "")
     set(
         commands_l
-        "bash;-c;cpio ${cpio_reproducible_flag} --quiet --create -H newc --file=${output_name}.cpio &;&&"
+        "bash;-c;rm -rf ${output_dir}&&mkdir -p ${output_dir};&&"
     )
     foreach(file ${ARGN})
         # Try and generate reproducible cpio meta-data as we do this:
@@ -46,9 +47,9 @@ function(MakeCPIO commands output_name)
         list(
             APPEND
             commands_l
-                "bash;-c;cd `dirname ${file}` && mkdir -p temp_${basename} && cd temp_${basename} && cp -a ${file} . && touch -d @0 `basename ${file}` && echo `basename ${file}` | cpio --append ${cpio_reproducible_flag} --owner=root:root --quiet -o -H newc --file=${output_name}.cpio && rm `basename ${file}` && cd ../ && rmdir temp_${basename};&&"
+                "bash;-c;cd ${output_dir}&&cp -a ${file} . && touch -d @0 `basename ${file}`;&&"
         )
     endforeach()
-    list(APPEND commands_l "true")
+    list(APPEND commands_l "bash;-c;cd ${output_dir}&&ls | cpio ${cpio_reproducible_flag} --owner=root:root --quiet --create -H newc --file=${output_name}.cpio&&cd ../&&rm -rf ${output_dir};&&true")
     set(${commands} ${commands_l} PARENT_SCOPE)
 endfunction()
