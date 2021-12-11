@@ -11,6 +11,8 @@
 
 extern unsigned long init_stack[THREAD_SIZE / sizeof(unsigned long)];
 
+#define INIT_TASK_COMM "swapper"
+
 /*
  * Set up the first task table, touch at your own risk!. Base=0,
  * limit=0x1fffff (=2MB)
@@ -19,4 +21,5 @@ struct task_struct init_task = {
 	.thread_info	= INIT_THREAD_INFO(init_task),
 	.state		= 0,
 	.stack		= init_stack,
+	.comm		= INIT_TASK_COMM,
 };

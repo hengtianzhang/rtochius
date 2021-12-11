@@ -13,6 +13,9 @@ extern char __sched_text_start[], __sched_text_end[];
 
 struct mm_struct;
 
+/* Task command name length: */
+#define TASK_COMM_LEN			16
+
 struct task_struct {
 	/*
 	 * For reasons of header soup (see current_thread_info()), this
@@ -30,6 +33,15 @@ struct task_struct {
 	pid_t				pid;
 
 	struct mm_struct		*mm;
+
+	/*
+	 * executable name, excluding path.
+	 *
+	 * - normally initialized setup_new_exec()
+	 * - access it with [gs]et_task_comm()
+	 * - lock it with task_lock()
+	 */
+	char				comm[TASK_COMM_LEN];
 
 #ifdef CONFIG_STACKPROTECTOR
 	/* Canary value for the -fstack-protector GCC feature: */

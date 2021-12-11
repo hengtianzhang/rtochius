@@ -33,4 +33,21 @@ extern char *parse_args(const char *doing,
 extern void parse_early_options(char *cmdline);
 extern void parse_early_param(void);
 
+typedef int (*initcall_t)(void);
+typedef initcall_t initcall_entry_t;
+
+#define ___define_initcall(fn, id, __sec) \
+	static initcall_t __initcall_##fn##id __used \
+		__attribute__((__section__(#__sec ".init"))) = fn;
+#define __define_initcall(fn, id) ___define_initcall(fn, id, .initcall##id)
+
+#define early_initcall(fn)		__define_initcall(fn, 0)
+#define core_initcall(fn)		__define_initcall(fn, 1)
+#define postcore_initcall(fn)	__define_initcall(fn, 2)
+#define arch_initcall(fn)		__define_initcall(fn, 3)
+#define subsys_initcall(fn)		__define_initcall(fn, 4)
+#define device_initcall(fn)		__define_initcall(fn, 5)
+#define userver_initcall(fn)	__define_initcall(fn, 6)
+#define late_initcall(fn)		__define_initcall(fn, 7)
+
 #endif /* !__RTOCHIUS_PARAM_H_ */

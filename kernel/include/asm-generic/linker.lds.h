@@ -290,6 +290,22 @@
 		KEEP(*(.init.setup))					\
 		__setup_end = .;
 
+#define INIT_CALLS_LEVEL(level)					\
+		__initcall##level##_start = .;			\
+		KEEP(*(.initcall##level##.init))		\
+
+#define INIT_CALLS							\
+		__initcall_start = .;					\
+		INIT_CALLS_LEVEL(0)					\
+		INIT_CALLS_LEVEL(1)					\
+		INIT_CALLS_LEVEL(2)					\
+		INIT_CALLS_LEVEL(3)					\
+		INIT_CALLS_LEVEL(4)					\
+		INIT_CALLS_LEVEL(5)					\
+		INIT_CALLS_LEVEL(6)					\
+		INIT_CALLS_LEVEL(7)					\
+		__initcall_end = .;
+
 /* Stabs debugging sections.  */
 #define STABS_DEBUG							\
 		.stab 0 : { *(.stab) }					\
