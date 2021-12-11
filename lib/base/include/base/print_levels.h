@@ -14,7 +14,7 @@
 #define PRINT_INFO	PRINT_SOH "6"	/* informational */
 #define PRINT_DEBUG	PRINT_SOH "7"	/* debug-level messages */
 
-#define PRINT_DEFAULT	""		/* the default kernel loglevel */
+#define KERN_DEFAULT	PRINT_SOH "d"	/* the default kernel loglevel */
 
 /*
  * Annotation for a "continued" line of log printout (only done after a

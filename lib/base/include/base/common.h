@@ -410,12 +410,12 @@ int printf(const char *fmt, ...);
 	0;						\
 })
 
-
 static inline int printf_get_level(const char *buffer)
 {
 	if (buffer[0] == PRINT_SOH_ASCII && buffer[1]) {
 		switch (buffer[1]) {
 		case '0' ... '7':
+		case 'd':	/* KERN_DEFAULT */
 		case 'c':	/* KERN_CONT */
 			return buffer[1];
 		}

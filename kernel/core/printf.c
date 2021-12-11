@@ -26,6 +26,7 @@
 #include <rtochius/sched/clock.h>
 #include <rtochius/serial.h>
 #include <rtochius/spinlock.h>
+#include <rtochius/param.h>
 
 enum log_flags {
 	LOG_NEWLINE	= 2,	/* text ended with a newline */
@@ -56,6 +57,24 @@ __packed __aligned(4)
 static int console_printf = CONSOLE_LOGLEVEL_DEFAULT;
 #define console_loglevel (console_printf)
 
+static int __init loglevel(char *str)
+{
+	int newlevel;
+
+	/*
+	 * Only update loglevel value when a correct setting was passed,
+	 * to prevent blind crashes (when loglevel being set to 0) that
+	 * are quite hard to debug
+	 */
+	if (get_option(&str, &newlevel)) {
+		console_loglevel = newlevel;
+		return 0;
+	}
+
+	return -EINVAL;
+}
+early_param("loglevel", loglevel);
+
 /*
  * The logbuf_lock protects kmsg buffer, indices, counters.  This can be taken
  * within the scheduler's rq lock. It must be released before calling
@@ -74,7 +93,6 @@ static u32 log_next_idx;
 /* the next printf record to write to the console */
 static u64 console_seq;
 static u32 console_idx;
-static u64 exclusive_console_stop_seq;
 
 /* the next printf record to read after the last 'clear' command */
 static u64 clear_seq;
@@ -410,8 +428,9 @@ static bool cont_add(int facility, int level, enum log_flags flags, const char *
 	memcpy(cont.buf + cont.len, text, len);
 	cont.len += len;
 
-	// The original flags come from the first line,
-	// but later continuations can add a newline.
+	/* The original flags come from the first line,
+	 * but later continuations can add a newline.
+	 */
 	if (flags & LOG_NEWLINE) {
 		cont.flags |= LOG_NEWLINE;
 		cont_flush();
@@ -450,7 +469,7 @@ static size_t log_output(int facility, int level, enum log_flags lflags, const c
 }
 
 /* Must be called under logbuf_lock. */
-int vprintk_store(int facility, int level,
+static int vprintk_store(int facility, int level,
 		  const char *dict, size_t dictlen,
 		  const char *fmt, va_list args)
 {
@@ -478,8 +497,7 @@ int vprintk_store(int facility, int level,
 		while ((kern_level = printf_get_level(text)) != 0) {
 			switch (kern_level) {
 			case '0' ... '7':
-				if (level == LOGLEVEL_DEFAULT)
-					level = kern_level - '0';
+				level = kern_level - '0';
 				/* fallthrough */
 			case 'd':	/* KERN_DEFAULT */
 				lflags |= LOG_PREFIX;
@@ -494,7 +512,7 @@ int vprintk_store(int facility, int level,
 	}
 
 	if (level == LOGLEVEL_DEFAULT)
-		level = LOGLEVEL_DEFAULT;
+		level = console_loglevel;
 
 	if (dict)
 		lflags |= LOG_PREFIX|LOG_NEWLINE;
@@ -505,14 +523,12 @@ int vprintk_store(int facility, int level,
 
 #define CONSOLE_EXT_LOG_MAX	8192
 
-void console_write(void)
+static void console_write(void)
 {
-	static char ext_text[CONSOLE_EXT_LOG_MAX];
 	static char text[LOG_LINE_MAX + PREFIX_MAX];
 
 	for (;;) {
 		struct printf_log *msg;
-		size_t ext_len = 0;
 		size_t len;
 
 		if (console_seq < log_first_seq) {
@@ -551,38 +567,33 @@ skip:
 	}
 }
 
-asmlinkage int vprintk_emit(int facility, int level,
+static asmlinkage int vprintk_emit(int facility, int level,
 			    const char *dict, size_t dictlen,
 			    const char *fmt, va_list args)
 {
-	int printed_len;
-	bool in_sched = false, pending_output;
 	unsigned long flags;
+	int printed_len;
 	u64 curr_log_seq;
 
+	raw_spin_lock_irqsave(&logbuf_lock, flags);
 	curr_log_seq = log_next_seq;
 	printed_len = vprintk_store(facility, level, dict, dictlen, fmt, args);
-	pending_output = (curr_log_seq != log_next_seq);
+	raw_spin_unlock_irqrestore(&logbuf_lock, flags);
 
-
-		/*
-		 * Disable preemption to avoid being preempted while holding
-		 * console_sem which would prevent anyone from printing to
-		 * console
-		 */
-		preempt_disable();
-
-		if (earlycon_device_available())
-			console_write();
-
-		preempt_enable();
-
-
+	/*
+	 * Disable preemption to avoid being preempted while holding
+	 * console_sem which would prevent anyone from printing to
+	 * console
+	 */
+	raw_spin_lock_irqsave(&logbuf_lock, flags);
+	if (earlycon_device_available())
+		console_write();
+	raw_spin_unlock_irqrestore(&logbuf_lock, flags);
 
 	return printed_len;
 }
 
-int vprintk_default(const char *fmt, va_list args)
+static int vprintk_default(const char *fmt, va_list args)
 {
 	int r;
 
