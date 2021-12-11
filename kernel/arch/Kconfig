@@ -62,6 +62,10 @@ config STACKPROTECTOR_STRONG
 	  about 20% of all kernel functions, which increases the kernel code
 	  size by about 2%.
 
+config PGTABLE_LEVELS
+	int
+	default 2
+
 config ARCH_WANT_LD_ORPHAN_WARN
 	bool
 	help
