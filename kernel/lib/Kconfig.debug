@@ -1,5 +1,12 @@
 menu "Kernel hacking"
 
+config MESSAGE_LOGLEVEL_DEFAULT
+	int "Default message log level (1-7)"
+	range 1 7
+	default "7"
+	help
+	  Default log level for printf statements with no specified priority.
+
 menu "Compile-time checks and compiler options"
 
 config DEBUG_INFO
