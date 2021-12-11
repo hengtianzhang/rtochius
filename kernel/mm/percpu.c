@@ -11,7 +11,7 @@
  * on the physical linear memory mapping which uses large page
  * mappings on applicable archs.
  */
-#define pr_fmt(fmt) "percpu" ": " fmt
+#define pr_fmt(fmt) "percpu: " fmt
 
 #include <base/cache.h>
 

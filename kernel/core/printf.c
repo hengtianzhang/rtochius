@@ -15,7 +15,7 @@
  * Rewrote bits to get rid of console_lock
  *	01Mar01 Andrew Morton
  */
-#define pr_fmt(fmt) "printf" ": " fmt
+#define pr_fmt(fmt) "printf: " fmt
 
 #include <base/linkage.h>
 #include <base/compiler.h>

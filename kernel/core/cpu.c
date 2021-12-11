@@ -3,6 +3,8 @@
  *
  * This code is licenced under the GPL.
  */
+#define pr_fmt(fmt) "cpu: " fmt
+
 #include <base/cache.h>
 #include <base/init.h>
 

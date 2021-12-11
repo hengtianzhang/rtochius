@@ -3,6 +3,7 @@
  *
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
+#define pr_fmt(fmt) "fork: " fmt
 
 /*
  *  'fork.c' contains the help-routines for the 'fork' system call
