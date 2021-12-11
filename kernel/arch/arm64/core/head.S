@@ -35,14 +35,6 @@
 
 #define	__PHYS_OFFSET		(KERNEL_START)
 
-#if (TEXT_OFFSET & 0xfff) != 0
-#error TEXT_OFFSET must be at least 4KB aligned
-#elif (PAGE_OFFSET & 0x1fffff) != 0
-#error PAGE_OFFSET must be at least 2MB aligned
-#elif TEXT_OFFSET > 0x1fffff
-#error TEXT_OFFSET must be less than 2MB
-#endif
-
 /*
  * Kernel startup entry point.
  * ---------------------------
