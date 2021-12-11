@@ -284,6 +284,12 @@
 		__stop_notes = .;					\
 	}
 
+#define INIT_SETUP(initsetup_align)					\
+		. = ALIGN(initsetup_align);				\
+		__setup_start = .;					\
+		KEEP(*(.init.setup))					\
+		__setup_end = .;
+
 /* Stabs debugging sections.  */
 #define STABS_DEBUG							\
 		.stab 0 : { *(.stab) }					\

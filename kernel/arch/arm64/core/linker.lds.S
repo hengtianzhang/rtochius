@@ -106,6 +106,7 @@ SECTIONS
 
 	.init.data : {
 		INIT_DATA
+		INIT_SETUP(16)
 		*(.init.rodata.* .init.bss)	/* from the EFI stub */
 	}
 

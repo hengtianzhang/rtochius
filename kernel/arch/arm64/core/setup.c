@@ -25,6 +25,7 @@
 #include <rtochius/memory.h>
 #include <rtochius/cpu.h>
 #include <rtochius/dump_stack.h>
+#include <rtochius/param.h>
 
 #include <asm/percpu.h>
 #include <asm/cputype.h>
@@ -97,6 +98,8 @@ void __init setup_arch(char *cmdline)
  	early_fixmap_init();
 
     setup_machine_fdt(__fdt_pointer);
+
+	parse_early_param();
 
 	setup_fixmap_console();
 }
