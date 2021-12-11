@@ -391,6 +391,12 @@ int sscanf(const char *, const char *, ...);
 extern __scanf(2, 0)
 int vsscanf(const char *, const char *, va_list);
 
+extern int get_option(char **str, int *pint);
+extern char *get_options(const char *str, int nints, int *ints);
+extern unsigned long long memparse(const char *ptr, char **retptr);
+extern bool parse_option_str(const char *str, const char *option);
+extern char *next_arg(char *args, char **param, char **val);
+
 extern __printf(1, 2)
 void panic(const char *fmt, ...) __noreturn __cold;
 
@@ -488,9 +494,19 @@ extern int hex_to_bin(char ch);
 extern int hex2bin(u8 *dst, const char *src, size_t count);
 extern char *bin2hex(char *dst, const void *src, size_t count);
 
+enum {
+	DUMP_PREFIX_NONE,
+	DUMP_PREFIX_ADDRESS,
+	DUMP_PREFIX_OFFSET
+};
 extern int hex_dump_to_buffer(const void *buf, size_t len, int rowsize,
 			      int groupsize, char *linebuf, size_t linebuflen,
 			      bool ascii);
+extern void print_hex_dump(const char *level, const char *prefix_str,
+			   int prefix_type, int rowsize, int groupsize,
+			   const void *buf, size_t len, bool ascii);
+extern void print_hex_dump_bytes(const char *prefix_str, int prefix_type,
+				 const void *buf, size_t len);
 
 /*
  * min()/max()/clamp() macros must accomplish three things:
