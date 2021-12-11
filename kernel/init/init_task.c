@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0
 #include <rtochius/sched.h>
+#include <rtochius/mm_types.h>
 
 #include <asm/memory.h>
 
@@ -21,5 +22,6 @@ struct task_struct init_task = {
 	.thread_info	= INIT_THREAD_INFO(init_task),
 	.state		= 0,
 	.stack		= init_stack,
+	.mm		= &init_mm,
 	.comm		= INIT_TASK_COMM,
 };

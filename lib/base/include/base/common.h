@@ -287,6 +287,10 @@ int kstrtos16(const char *s, unsigned int base, s16 *res);
 int kstrtou8(const char *s, unsigned int base, u8 *res);
 int kstrtos8(const char *s, unsigned int base, s8 *res);
 int kstrtobool(const char *s, bool *res);
+static inline int strtobool(const char *s, bool *res)
+{
+	return kstrtobool(s, res);
+}
 
 /**
  * kstrtoul - convert a string to an unsigned long

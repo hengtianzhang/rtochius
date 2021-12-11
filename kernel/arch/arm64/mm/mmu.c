@@ -24,6 +24,8 @@
 #include <base/types.h>
 #include <base/libfdt.h>
 
+#include <rtochius/param.h>
+#include <rtochius/boot_stat.h>
 #include <rtochius/spinlock.h>
 #include <rtochius/page.h>
 #include <rtochius/memory.h>
@@ -495,6 +497,24 @@ static void __init map_kernel_segment(pgd_t *pgdp, void *va_start, void *va_end,
 			     early_pgtable_alloc, flags);
 }
 
+static int __init parse_rodata(char *arg)
+{
+	int ret = strtobool(arg, &rodata_enabled);
+	if (!ret) {
+		rodata_full = false;
+		return 0;
+	}
+
+	/* permit 'full' in addition to boolean options */
+	if (strcmp(arg, "full"))
+		return -EINVAL;
+
+	rodata_enabled = true;
+	rodata_full = true;
+	return 0;
+}
+early_param("rodata", parse_rodata);
+
 /*
  * Create fine-grained mappings for the kernel.
  */
@@ -505,7 +525,7 @@ static void __init map_kernel(pgd_t *pgdp)
 	 * mapping to install SW breakpoints. Allow this (only) when
 	 * explicitly requested with rodata=off.
 	 */
-	pgprot_t text_prot = PAGE_KERNEL_ROX;
+	pgprot_t text_prot = rodata_enabled ? PAGE_KERNEL_ROX : PAGE_KERNEL_EXEC;
 
 	/*
 	 * Only rodata will be remapped with different permissions later on,

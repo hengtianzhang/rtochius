@@ -20,12 +20,30 @@
 #include <rtochius/cpu.h>
 #include <rtochius/irqflags.h>
 #include <rtochius/param.h>
+#include <rtochius/memory.h>
+
+#include <asm/stackprotector.h>
+
+bool rodata_enabled __ro_after_init = true;
 
 /* Untouched command line saved by arch-specific code. */
 char __initdata boot_command_line[COMMAND_LINE_SIZE];
 
 /* Untouched saved command line (eg. for /proc) */
 char *saved_command_line;
+
+/*
+ * We need to store the untouched command line for future reference.
+ * We also need to store the touched command line since the parameter
+ * parsing is performed in place, and we should allow a component to
+ * store reference of name/value for future reference.
+ */
+static void __init setup_command_line(void)
+{
+	saved_command_line =
+		memblock_alloc_virt(&memblock_kernel, strlen(boot_command_line) + 1, SMP_CACHE_BYTES);
+	strcpy(saved_command_line, boot_command_line);
+}
 
 static int __init do_early_param(char *param, char *val,
 					const char *unused, void *arg)
@@ -111,5 +129,8 @@ asmlinkage __visible void __init start_kernel(void)
 	setup_arch(boot_command_line);
 
 	pr_notice("Kernel command line: %s\n", boot_command_line);
+	boot_init_stack_canary();
+	setup_command_line();
+	setup_nr_cpu_ids();
 	parse_early_options(boot_command_line);
 }

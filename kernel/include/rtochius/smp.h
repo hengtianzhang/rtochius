@@ -10,6 +10,8 @@
 
 extern void smp_setup_processor_id(void);
 
+extern void setup_nr_cpu_ids(void);
+
 extern int __boot_cpu_id;
 
 static inline int get_boot_cpu_id(void)

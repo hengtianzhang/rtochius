@@ -32,6 +32,8 @@
 #include <asm/smp_plat.h>
 #include <asm/fixmap.h>
 #include <asm/processor.h>
+#include <asm/daifflags.h>
+#include <asm/mmu_context.h>
 
 phys_addr_t __fdt_pointer __initdata;
 
@@ -102,4 +104,23 @@ void __init setup_arch(char *cmdline)
 	parse_early_param();
 
 	setup_fixmap_console();
+
+	/*
+	 * Unmask asynchronous aborts and fiq after bringing up possible
+	 * earlycon. (Report possible System Errors once we can report this
+	 * occurred).
+	 */
+	local_daif_restore(DAIF_PROCCTX_NOIRQ);
+
+	/*
+	 * TTBR0 is only used for the identity mapping at this stage. Make it
+	 * point to zero page to avoid speculatively fetching new entries.
+	 */
+	cpu_uninstall_idmap();
+
+	arm64_memblock_init();
+
+	paging_init();
+
+	unflatten_device_tree();
 }

@@ -173,5 +173,7 @@ extern int pfn_valid(unsigned long);
 #define virt_addr_valid(kaddr)		\
 	(_virt_addr_is_linear(kaddr) && (pfn_valid(__pa(kaddr) >> PAGE_SHIFT)))
 
+extern void arm64_memblock_init(void);
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_MEMORY_H_ */

@@ -8,6 +8,8 @@
 extern char boot_command_line[COMMAND_LINE_SIZE];
 extern char *saved_command_line;
 
+extern bool rodata_enabled;
+
 extern asmlinkage void start_kernel(void);
 extern void setup_arch(char *);
 
