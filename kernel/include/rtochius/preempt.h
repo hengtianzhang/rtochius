@@ -11,4 +11,6 @@
 
 #define SOFTIRQ_LOCK_OFFSET (1)
 
+#define preemptible()	(0)
+
 #endif /* !__RTOCHIUS_PREEMPT_H_ */

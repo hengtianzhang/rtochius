@@ -19,3 +19,11 @@ void __init setup_nr_cpu_ids(void)
 {
 	nr_cpu_ids = find_last_bit(cpumask_bits(cpu_possible_mask), NR_CPUS) + 1;
 }
+
+/*
+ * Call a function on all processors
+ */
+int on_each_cpu(int (*func) (void *info), void *info, int wait)
+{
+	return 0;
+}

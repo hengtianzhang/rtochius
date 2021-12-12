@@ -18,6 +18,7 @@
  */
 #include <base/common.h>
 
+#include <asm/traps.h>
 #include <asm/pgtable.h>
 
 void __pte_error(const char *file, int line, unsigned long val)
@@ -38,4 +39,12 @@ void __pud_error(const char *file, int line, unsigned long val)
 void __pgd_error(const char *file, int line, unsigned long val)
 {
 	pr_err("%s:%d: bad pgd %016lx.\n", file, line, val);
+}
+
+void register_undef_hook(struct undef_hook *hook)
+{
+}
+
+void arm64_skip_faulting_instruction(struct pt_regs *regs, unsigned long size)
+{
 }

@@ -67,5 +67,6 @@ static inline void spin_lock_prefetch(const void *ptr)
 	asm volatile("prfm pstl1strm, %a0" : : "p" (ptr));
 }
 
+extern void minsigstksz_setup(void);
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_PROCESSOR_H_ */

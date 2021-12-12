@@ -91,6 +91,8 @@
 
 #ifndef __ASSEMBLY__
 
+#include <base/common.h>
+
 /*
  * This struct defines the way the registers are stored on the stack during an
  * exception. Note that sizeof(struct pt_regs) has to be a multiple of 16 (for
@@ -119,6 +121,121 @@ struct pt_regs {
 	u64 unused;	// maintain 16 byte alignment
 	u64 stackframe[2];
 };
+
+static inline bool in_syscall(struct pt_regs const *regs)
+{
+	return regs->syscallno != NO_SYSCALL;
+}
+
+static inline void forget_syscall(struct pt_regs *regs)
+{
+	regs->syscallno = NO_SYSCALL;
+}
+
+#define MAX_REG_OFFSET offsetof(struct pt_regs, pstate)
+
+#define arch_has_single_step()	(1)
+
+#define compat_thumb_mode(regs) (0)
+
+#define user_mode(regs)	\
+	(((regs)->pstate & PSR_MODE_MASK) == PSR_MODE_EL0t)
+
+#define compat_user_mode(regs)	\
+	(((regs)->pstate & (PSR_MODE32_BIT | PSR_MODE_MASK)) == \
+	 (PSR_MODE32_BIT | PSR_MODE_EL0t))
+
+#define processor_mode(regs) \
+	((regs)->pstate & PSR_MODE_MASK)
+
+#define interrupts_enabled(regs) \
+	(!((regs)->pstate & PSR_I_BIT))
+
+#define fast_interrupts_enabled(regs) \
+	(!((regs)->pstate & PSR_F_BIT))
+
+#define GET_USP(regs) \
+	(!compat_user_mode(regs) ? (regs)->sp : (regs)->compat_sp)
+
+#define SET_USP(ptregs, value) \
+	(!compat_user_mode(regs) ? ((regs)->sp = value) : ((regs)->compat_sp = value))
+
+extern int regs_query_register_offset(const char *name);
+extern unsigned long regs_get_kernel_stack_nth(struct pt_regs *regs,
+					       unsigned int n);
+
+/**
+ * regs_get_register() - get register value from its offset
+ * @regs:	pt_regs from which register value is gotten
+ * @offset:	offset of the register.
+ *
+ * regs_get_register returns the value of a register whose offset from @regs.
+ * The @offset is the offset of the register in struct pt_regs.
+ * If @offset is bigger than MAX_REG_OFFSET, this returns 0.
+ */
+static inline u64 regs_get_register(struct pt_regs *regs, unsigned int offset)
+{
+	u64 val = 0;
+
+	WARN_ON(offset & 7);
+
+	offset >>= 3;
+	switch (offset) {
+	case 0 ... 30:
+		val = regs->regs[offset];
+		break;
+	case offsetof(struct pt_regs, sp) >> 3:
+		val = regs->sp;
+		break;
+	case offsetof(struct pt_regs, pc) >> 3:
+		val = regs->pc;
+		break;
+	case offsetof(struct pt_regs, pstate) >> 3:
+		val = regs->pstate;
+		break;
+	default:
+		val = 0;
+	}
+
+	return val;
+}
+
+/*
+ * Read a register given an architectural register index r.
+ * This handles the common case where 31 means XZR, not SP.
+ */
+static inline unsigned long pt_regs_read_reg(const struct pt_regs *regs, int r)
+{
+	return (r == 31) ? 0 : regs->regs[r];
+}
+
+/*
+ * Write a register given an architectural register index r.
+ * This handles the common case where 31 means XZR, not SP.
+ */
+static inline void pt_regs_write_reg(struct pt_regs *regs, int r,
+				     unsigned long val)
+{
+	if (r != 31)
+		regs->regs[r] = val;
+}
+
+/* Valid only for Kernel mode traps. */
+static inline unsigned long kernel_stack_pointer(struct pt_regs *regs)
+{
+	return regs->sp;
+}
+
+static inline unsigned long regs_return_value(struct pt_regs *regs)
+{
+	return regs->regs[0];
+}
+
+#define GET_IP(regs)		((unsigned long)(regs)->pc)
+#define SET_IP(regs, value)	((regs)->pc = ((u64) (value)))
+
+#define GET_FP(ptregs)		((unsigned long)(ptregs)->regs[29])
+#define SET_FP(ptregs, value)	((ptregs)->regs[29] = ((u64) (value)))
 
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_PTRACE_H_ */

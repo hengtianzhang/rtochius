@@ -47,4 +47,9 @@ extern void smp_prepare_cpus(unsigned int max_cpus);
  */
 void smp_prepare_boot_cpu(void);
 
+/*
+ * Call a function on all processors
+ */
+extern int on_each_cpu(int (*func) (void *info), void *info, int wait);
+
 #endif /* __RTOCHIUS_SMP_H_ */
