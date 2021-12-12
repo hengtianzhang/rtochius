@@ -27,8 +27,9 @@
 #include <rtochius/dump_stack.h>
 #include <rtochius/param.h>
 #include <rtochius/psci.h>
+#include <rtochius/percpu.h>
 
-#include <asm/percpu.h>
+#include <asm/cpu.h>
 #include <asm/cputype.h>
 #include <asm/smp_plat.h>
 #include <asm/fixmap.h>
@@ -139,3 +140,16 @@ void __init setup_arch(char *cmdline)
 			boot_args[1], boot_args[2], boot_args[3]);
 	}
 }
+
+static int __init topology_init(void)
+{
+	int i;
+
+	for_each_possible_cpu(i) {
+		struct cpu *cpu = &per_cpu(cpu_data.cpu, i);
+		register_cpu(cpu, i);
+	}
+
+	return 0;
+}
+subsys_initcall(topology_init);
