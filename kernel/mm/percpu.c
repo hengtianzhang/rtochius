@@ -13,8 +13,31 @@
  */
 #define pr_fmt(fmt) "percpu: " fmt
 
-#include <base/cache.h>
+#include <base/init.h>
 
+#include <rtochius/cpumask.h>
+#include <rtochius/percpu.h>
 #include <rtochius/threads.h>
+#include <rtochius/memory.h>
+
+#include <asm/cache.h>
+#include <asm/sections.h>
 
 unsigned long __per_cpu_offset[NR_CPUS] __read_mostly;
+
+void __init setup_per_cpu_areas(void)
+{
+	void *alloc_ptr;
+	unsigned long delta = __per_cpu_end - __per_cpu_load;
+	unsigned int cpu;
+	unsigned long offset;
+
+	for_each_possible_cpu(cpu) {
+		alloc_ptr = memblock_alloc_virt(&memblock_kernel, delta, SMP_CACHE_BYTES);
+		if (!alloc_ptr)
+			panic("percpu alloc failed!\n");
+		offset = (unsigned long)alloc_ptr - (unsigned long)__per_cpu_load;
+		memcpy(alloc_ptr, __per_cpu_load, delta);
+		__per_cpu_offset[cpu] = offset;
+	}
+}

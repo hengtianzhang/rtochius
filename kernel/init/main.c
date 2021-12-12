@@ -134,5 +134,6 @@ asmlinkage __visible void __init start_kernel(void)
 	boot_init_stack_canary();
 	setup_command_line();
 	setup_nr_cpu_ids();
+	setup_per_cpu_areas();
 	parse_early_options(boot_command_line);
 }

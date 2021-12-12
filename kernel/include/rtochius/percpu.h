@@ -7,4 +7,6 @@
 
 #include <asm/percpu.h>
 
+extern void setup_per_cpu_areas(void);
+
 #endif /* !__RTOCHIUS_PERCPU_H_ */
