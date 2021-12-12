@@ -18,8 +18,25 @@
 #include <base/init.h>
 #include <base/common.h>
 
+#include <rtochius/extable.h>
+
 #include <asm/sections.h>
 
-//extern struct exception_table_entry __start___ex_table[];
-//extern struct exception_table_entry __stop___ex_table[];
+extern struct exception_table_entry __start___ex_table[];
+extern struct exception_table_entry __stop___ex_table[];
 
+/* Sort the kernel's built-in exception table */
+void __init sort_main_extable(void)
+{
+	if ((unsigned long)__stop___ex_table > (unsigned long)__start___ex_table) {
+		pr_notice("Sorting __ex_table...\n");
+		sort_extable(__start___ex_table, __stop___ex_table);
+	}
+}
+
+/* Given an address, look for it in the exception tables. */
+const struct exception_table_entry *search_exception_tables(unsigned long addr)
+{
+	return search_extable(__start___ex_table,
+			   __stop___ex_table - __start___ex_table, addr);
+}

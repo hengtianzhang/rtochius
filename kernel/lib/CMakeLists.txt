@@ -3,6 +3,7 @@ kernel_interface_library()
 
 kernel_interface_library_sources(
     cpumask.c dec_and_lock.c dump_stack.c params.c
+    extable.c
 )
 
 kernel_interface_library_sources_ifdef(

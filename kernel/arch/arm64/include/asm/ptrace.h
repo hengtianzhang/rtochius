@@ -97,7 +97,27 @@
  * stack alignment). struct user_pt_regs must form a prefix of struct pt_regs.
  */
 struct pt_regs {
-	unsigned long orig_x0;
+	union {
+		struct user_pt_regs user_regs;
+		struct {
+			u64 regs[31];
+			u64 sp;
+			u64 pc;
+			u64 pstate;
+		};
+	};
+	u64 orig_x0;
+#ifdef __AARCH64EB__
+	u32 unused2;
+	s32 syscallno;
+#else
+	s32 syscallno;
+	u32 unused2;
+#endif
+
+	u64 orig_addr_limit;
+	u64 unused;	// maintain 16 byte alignment
+	u64 stackframe[2];
 };
 
 #endif /* !__ASSEMBLY__ */

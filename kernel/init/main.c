@@ -21,6 +21,7 @@
 #include <rtochius/irqflags.h>
 #include <rtochius/param.h>
 #include <rtochius/memory.h>
+#include <rtochius/extable.h>
 
 #include <asm/stackprotector.h>
 
@@ -130,10 +131,14 @@ asmlinkage __visible void __init start_kernel(void)
 	pr_notice("%s", rtochius_banner);
 	setup_arch(boot_command_line);
 
-	pr_notice("Kernel command line: %s\n", boot_command_line);
 	boot_init_stack_canary();
 	setup_command_line();
 	setup_nr_cpu_ids();
 	setup_per_cpu_areas();
+	smp_prepare_boot_cpu();	/* arch-specific boot-cpu hooks */
+
+	pr_notice("Kernel command line: %s\n", boot_command_line);
 	parse_early_options(boot_command_line);
+
+	sort_main_extable();
 }
