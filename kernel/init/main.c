@@ -24,6 +24,8 @@
 
 #include <asm/stackprotector.h>
 
+enum system_states system_state __read_mostly;
+
 bool rodata_enabled __ro_after_init = true;
 
 /* Untouched command line saved by arch-specific code. */

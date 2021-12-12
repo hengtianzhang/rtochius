@@ -44,6 +44,12 @@ static inline bool is_boot_el2(void)
 		__boot_cpu_mode[1] == BOOT_CPU_MODE_EL2);
 }
 
+/* Check if the bootloader has booted CPUs in different modes */
+static inline bool is_hyp_mode_mismatched(void)
+{
+	return __boot_cpu_mode[0] != __boot_cpu_mode[1];
+}
+
 extern u64 __cacheline_aligned boot_args[4];
 extern phys_addr_t __fdt_pointer __initdata;
 

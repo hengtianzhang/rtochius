@@ -34,6 +34,7 @@ typedef struct {
 #define ASID(mm)	((mm)->context.id.counter & 0xffff)
 
 extern void paging_init(void);
+extern void bootmem_init(void);
 
 extern void mark_rodata_ro(void);
 extern void mark_linear_text_alias_ro(void);

@@ -89,4 +89,16 @@
  */
 #define NO_SYSCALL (-1)
 
+#ifndef __ASSEMBLY__
+
+/*
+ * This struct defines the way the registers are stored on the stack during an
+ * exception. Note that sizeof(struct pt_regs) has to be a multiple of 16 (for
+ * stack alignment). struct user_pt_regs must form a prefix of struct pt_regs.
+ */
+struct pt_regs {
+	unsigned long orig_x0;
+};
+
+#endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_PTRACE_H_ */

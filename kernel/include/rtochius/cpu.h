@@ -18,6 +18,8 @@
 
 #include <rtochius/of.h>
 
+#include <asm/cpu.h>
+
 struct device;
 
 struct cpu {

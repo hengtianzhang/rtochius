@@ -21,4 +21,30 @@ static inline int get_boot_cpu_id(void)
 
 #define smp_processor_id() raw_smp_processor_id()
 
+/*
+ * Final polishing of CPUs
+ */
+extern void smp_cpus_done(unsigned int max_cpus);
+
+/*
+ * Bring a CPU up
+ */
+extern int __cpu_up(unsigned int cpunum, struct task_struct *tidle);
+
+/*
+ * stops all CPUs but the current one:
+ */
+extern void smp_send_stop(void);
+
+/*
+ * Prepare machine for booting other CPUs.
+ */
+extern void smp_prepare_cpus(unsigned int max_cpus);
+
+/*
+ * Mark the boot cpu "online" so that it can call console drivers in
+ * printk() and can access its per-cpu storage.
+ */
+void smp_prepare_boot_cpu(void);
+
 #endif /* __RTOCHIUS_SMP_H_ */

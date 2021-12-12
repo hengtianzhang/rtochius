@@ -26,6 +26,7 @@
 #include <rtochius/cpu.h>
 #include <rtochius/dump_stack.h>
 #include <rtochius/param.h>
+#include <rtochius/psci.h>
 
 #include <asm/percpu.h>
 #include <asm/cputype.h>
@@ -34,6 +35,7 @@
 #include <asm/processor.h>
 #include <asm/daifflags.h>
 #include <asm/mmu_context.h>
+#include <asm/cpu_ops.h>
 
 phys_addr_t __fdt_pointer __initdata;
 
@@ -119,8 +121,21 @@ void __init setup_arch(char *cmdline)
 	cpu_uninstall_idmap();
 
 	arm64_memblock_init();
-
 	paging_init();
 
 	unflatten_device_tree();
+
+	bootmem_init();
+
+	psci_dt_init();
+
+	cpu_read_bootcpu_ops();
+	smp_init_cpus();
+
+	if (boot_args[1] || boot_args[2] || boot_args[3]) {
+		pr_err("WARNING: x1-x3 nonzero in violation of boot protocol:\n"
+			"\tx1: %016llx\n\tx2: %016llx\n\tx3: %016llx\n"
+			"This indicates a broken bootloader or old kernel\n",
+			boot_args[1], boot_args[2], boot_args[3]);
+	}
 }

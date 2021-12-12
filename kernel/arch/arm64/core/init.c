@@ -22,6 +22,7 @@
 #include <rtochius/of_fdt.h>
 #include <rtochius/memory.h>
 #include <rtochius/page.h>
+#include <rtochius/param.h>
 
 #include <asm/kernel-pgtable.h>
 #include <asm/sections.h>
@@ -151,4 +152,41 @@ void __init arm64_memblock_init(void)
 	memblock_reserve(&memblock_kernel, __pa_symbol(_text), _end - _text);
 
 	early_init_fdt_scan_reserved_mem();
+}
+
+static void __init vmemmap_init(void)
+{
+	int i;
+	size_t size;
+	phys_addr_t phys_addr, start_pfn, end_pfn;
+
+	for_each_mem_pfn_range(&memblock_kernel, i, &start_pfn, &end_pfn) {
+		size = round_up(((end_pfn - start_pfn) * sizeof (struct page)), PAGE_SIZE);
+		phys_addr = memblock_alloc(&memblock_kernel, size, PAGE_SIZE);
+
+		vmemmap_populate(phys_addr, (unsigned long)pfn_to_page(start_pfn), size);
+		memset(pfn_to_page(start_pfn), 0, size);
+	}
+}
+
+static int __init early_memblock(char *p)
+{
+	if (p && strstr(p, "debug"))
+		memblock_debug_enable();
+	return 0;
+}
+early_param("memblock", early_memblock);
+
+void __init bootmem_init(void)
+{
+	unsigned long min, max;
+
+	min = PFN_UP(memblock_start_of_DRAM(&memblock_kernel));
+	max = PFN_DOWN(memblock_end_of_DRAM(&memblock_kernel));
+
+	early_memtest(min << PAGE_SHIFT, max << PAGE_SHIFT);
+
+	vmemmap_init();
+
+	memblock_dump_all(&memblock_kernel);
 }

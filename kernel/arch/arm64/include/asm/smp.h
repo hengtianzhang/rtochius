@@ -34,12 +34,16 @@
 #define CPU_STUCK_REASON_52_BIT_VA	(UL(1) << CPU_STUCK_REASON_SHIFT)
 #define CPU_STUCK_REASON_NO_GRAN	(UL(2) << CPU_STUCK_REASON_SHIFT)
 
+#define NR_IPI	7
+
 #ifndef __ASSEMBLY__
 
 #include <base/linkage.h>
 
 #include <rtochius/percpu.h>
 #include <rtochius/cpumask.h>
+
+#include <asm/ptrace.h>
 
 DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
 
@@ -53,11 +57,6 @@ DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
 #define raw_smp_processor_id() (*raw_cpu_ptr(&cpu_number))
 
 struct task_struct;
-
-/*
- * Called from the secondary holding pen, this is the secondary CPU entry point.
- */
-asmlinkage void secondary_start_kernel(void);
 
 /*
  * Initial data for bringing up a secondary CPU.
@@ -74,6 +73,60 @@ struct secondary_data {
 extern struct secondary_data secondary_data;
 extern s64 __early_cpu_boot_status;
 extern void secondary_entry(void);
+
+/*
+ * Called from C code, this handles an IPI.
+ */
+extern void handle_IPI(int ipinr, struct pt_regs *regs);
+
+/*
+ * Discover the set of possible CPUs and determine their
+ * SMP operations.
+ */
+extern void smp_init_cpus(void);
+
+/*
+ * Provide a function to raise an IPI cross call on CPUs in callmap.
+ */
+extern void set_smp_cross_call(void (*)(const struct cpumask *, unsigned int));
+
+extern void (*__smp_cross_call)(const struct cpumask *, unsigned int);
+
+/*
+ * Called from the secondary holding pen, this is the secondary CPU entry point.
+ */
+asmlinkage void secondary_start_kernel(void);
+
+extern void arch_send_call_function_single_ipi(int cpu);
+extern void arch_send_call_function_ipi_mask(const struct cpumask *mask);
+
+extern void cpu_die_early(void);
+
+static inline void cpu_park_loop(void)
+{
+	for (;;) {
+		wfe();
+		wfi();
+	}
+}
+
+static inline void update_cpu_boot_status(int val)
+{
+	WRITE_ONCE(secondary_data.status, val);
+	/* Ensure the visibility of the status update */
+	dsb(ishst);
+}
+
+/*
+ * The calling secondary CPU has detected serious configuration mismatch,
+ * which calls for a kernel panic. Update the boot status and park the calling
+ * CPU.
+ */
+static inline void cpu_panic_kernel(void)
+{
+	update_cpu_boot_status(CPU_PANIC_KERNEL);
+	cpu_park_loop();
+}
 
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_SMP_H_ */

@@ -3,6 +3,20 @@
 
 #include <base/linkage.h>
 
+/*
+ * Values used for system_state. Ordering of the states must not be changed
+ * as code checks for <, <=, >, >= STATE.
+ */
+extern enum system_states {
+	SYSTEM_BOOTING,
+	SYSTEM_SCHEDULING,
+	SYSTEM_RUNNING,
+	SYSTEM_HALT,
+	SYSTEM_POWER_OFF,
+	SYSTEM_RESTART,
+	SYSTEM_SUSPEND,
+} system_state;
+
 #define COMMAND_LINE_SIZE	2048
 
 extern char boot_command_line[COMMAND_LINE_SIZE];

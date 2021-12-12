@@ -14,6 +14,7 @@
 
 #include <rtochius/mm_types.h>
 #include <rtochius/kbuild.h>
+#include <rtochius/arm-smccc.h>
 
 #include <asm/smp.h>
 
@@ -26,6 +27,11 @@ int main(void)
 	BLANK();
 	DEFINE(CPU_BOOT_STACK,	offsetof(struct secondary_data, stack));
 	DEFINE(CPU_BOOT_TASK,		offsetof(struct secondary_data, task));
+	BLANK();
+	DEFINE(ARM_SMCCC_RES_X0_OFFS,		offsetof(struct arm_smccc_res, a0));
+	DEFINE(ARM_SMCCC_RES_X2_OFFS,		offsetof(struct arm_smccc_res, a2));
+	DEFINE(ARM_SMCCC_QUIRK_ID_OFFS,	offsetof(struct arm_smccc_quirk, id));
+	DEFINE(ARM_SMCCC_QUIRK_STATE_OFFS,	offsetof(struct arm_smccc_quirk, state));
 	BLANK();
 
 	return 0;
