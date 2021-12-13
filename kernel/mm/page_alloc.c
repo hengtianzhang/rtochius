@@ -13,7 +13,6 @@
  *  Per cpu hot/cold page lists, bulk allocation, Martin J. Bligh, Sept 2002
  *          (lots of bits borrowed from Ingo Molnar & Andrew Morton)
  */
-#define pr_fmt(fmt) "page alloc: " fmt
 
 #include <base/pfn.h>
 #include <base/common.h>

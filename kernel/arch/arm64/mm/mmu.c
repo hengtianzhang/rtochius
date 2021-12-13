@@ -377,6 +377,17 @@ void __init vmemmap_populate(phys_addr_t phys, unsigned long virt,
 							early_pgtable_alloc, 0);
 }
 
+static phys_addr_t pgd_pgtable_alloc(void)
+{
+	void *ptr = (void *)__get_free_page(PGALLOC_GFP);
+	if (!ptr || !pgtable_page_ctor(virt_to_page(ptr)))
+		BUG();
+
+	/* Ensure the zeroed page is visible to the page table walker */
+	dsb(ishst);
+	return __pa(ptr);
+}
+
 int __init __create_iomap_remap(phys_addr_t phys_addr, u64 virt,
 					size_t size, pgprot_t prot, int flags)
 {
@@ -387,7 +398,7 @@ int __init __create_iomap_remap(phys_addr_t phys_addr, u64 virt,
 	}
 
 	__create_pgd_mapping(init_mm.pgd, phys_addr, virt, size, prot,
-			     early_pgtable_alloc, flags);
+			     pgd_pgtable_alloc, flags);
 
 	return 0;
 }

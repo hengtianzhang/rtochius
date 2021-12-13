@@ -15,6 +15,8 @@
 
 #include <rtochius/kernel_stat.h>
 #include <rtochius/uts.h>
+#include <rtochius/slab.h>
+#include <rtochius/mm.h>
 #include <rtochius/sched/task.h>
 #include <rtochius/smp.h>
 #include <rtochius/cpu.h>
@@ -119,6 +121,14 @@ static const char *initcall_level_names[] __initdata = {
 };
 #endif
 
+static __init void mm_init(void)
+{
+	free_area_init_nodes();
+	mem_print_memory_info();
+	kmem_cache_init();
+	pgtable_init();
+}
+
 asmlinkage __visible void __init start_kernel(void)
 {
 	set_task_stack_end_magic(&init_task);
@@ -141,4 +151,5 @@ asmlinkage __visible void __init start_kernel(void)
 	parse_early_options(boot_command_line);
 
 	sort_main_extable();
+	mm_init();
 }

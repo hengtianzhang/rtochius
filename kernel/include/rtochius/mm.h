@@ -158,6 +158,11 @@ static inline int put_pagetable_testzero(struct page *page)
 	return put_page_testzero(page);
 }
 
+static inline void pgtable_init(void)
+{
+	pgtable_cache_init();
+}
+
 static inline bool pgtable_page_ctor(struct page *page)
 {
 	__SetPageTable(page);
