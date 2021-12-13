@@ -25,11 +25,22 @@
 #include <rtochius/memory.h>
 #include <rtochius/extable.h>
 
+#include <asm/mmu.h>
 #include <asm/stackprotector.h>
 
 enum system_states system_state __read_mostly;
 
 bool rodata_enabled __ro_after_init = true;
+
+#if 0
+static void mark_readonly(void)
+{
+	if (rodata_enabled) {
+		mark_rodata_ro();
+	} else
+		pr_info("Kernel memory protection disabled.\n");
+}
+#endif
 
 /* Untouched command line saved by arch-specific code. */
 char __initdata boot_command_line[COMMAND_LINE_SIZE];

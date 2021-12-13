@@ -132,4 +132,8 @@ extern void flush_dcache_page(struct page *);
  */
 #define flush_icache_page(vma,page)	do { } while (0)
 
+static inline void flush_cache_vunmap(unsigned long start, unsigned long end)
+{
+}
+
 #endif /* !__ASM_CACHEFLUSH_H_ */

@@ -23,6 +23,7 @@
 #include <rtochius/memory.h>
 #include <rtochius/page.h>
 #include <rtochius/param.h>
+#include <rtochius/mm.h>
 
 #include <asm/kernel-pgtable.h>
 #include <asm/sections.h>
@@ -189,4 +190,17 @@ void __init bootmem_init(void)
 	vmemmap_init();
 
 	memblock_dump_all(&memblock_kernel);
+}
+
+void free_initmem(void)
+{
+	free_reserved_area(lm_alias(__init_begin),
+			   lm_alias(__init_end),
+			   0, "unused kernel");
+	/*
+	 * Unmap the __init region but leave the VM area in place. This
+	 * prevents the region from being reused for kernel modules, which
+	 * is not supported by kallsyms.
+	 */
+	unmap_kernel_range((u64)__init_begin, (u64)(__init_end - __init_begin));
 }

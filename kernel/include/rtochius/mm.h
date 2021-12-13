@@ -237,4 +237,7 @@ static inline void mm_dec_nr_p4ds(struct mm_struct *mm)
 	atomic_long_sub(PTRS_PER_P4D * sizeof(p4d_t), &mm->pgtables_bytes);
 }
 
+extern void unmap_kernel_range(unsigned long addr, unsigned long size);
+extern void free_initmem(void);
+
 #endif /* !__RTOCHIUS_MM_H_ */
