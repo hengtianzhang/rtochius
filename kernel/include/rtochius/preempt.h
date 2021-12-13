@@ -13,4 +13,6 @@
 
 #define preemptible()	(0)
 
+#define INIT_PREEMPT_COUNT 1
+
 #endif /* !__RTOCHIUS_PREEMPT_H_ */

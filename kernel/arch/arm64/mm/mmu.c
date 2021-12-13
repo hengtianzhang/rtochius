@@ -25,7 +25,7 @@
 #include <base/libfdt.h>
 
 #include <rtochius/param.h>
-#include <rtochius/boot_stat.h>
+#include <rtochius/kernel_stat.h>
 #include <rtochius/spinlock.h>
 #include <rtochius/page.h>
 #include <rtochius/memory.h>

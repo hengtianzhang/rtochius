@@ -1,7 +1,11 @@
 /*
- * Based on arch/arm/kernel/signal.c
+ * Based on arch/arm/kernel/irq.c
  *
- * Copyright (C) 1995-2009 Russell King
+ * Copyright (C) 1992 Linus Torvalds
+ * Modifications for ARM processor Copyright (C) 1995-2000 Russell King.
+ * Support for Dynamic Tick Timer Copyright (C) 2004-2005 Nokia Corporation.
+ * Dynamic Tick Timer written by Tony Lindgren <tony@atomide.com> and
+ * Tuukka Tikkanen <tuukka.tikkanen@elektrobit.com>.
  * Copyright (C) 2012 ARM Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,23 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <base/init.h>
+#include <rtochius/percpu.h>
 
-#include <asm/processor.h>
-
-unsigned long __ro_after_init signal_minsigstksz;
-
-/*
- * Determine the stack space required for guaranteed signal devliery.
- * This function is used to populate AT_MINSIGSTKSZ at process startup.
- * cpufeatures setup is assumed to be complete.
- */
-void __init minsigstksz_setup(void)
-{
-}
-
-asmlinkage void do_notify_resume(struct pt_regs *regs,
-				 unsigned long thread_flags)
-{
-	WARN_ON(1);
-}
+DEFINE_PER_CPU(unsigned long *, irq_stack_ptr);

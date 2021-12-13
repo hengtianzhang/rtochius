@@ -20,7 +20,7 @@
 #include <base/init.h>
 #include <base/cache.h>
 
-#include <rtochius/boot_stat.h>
+#include <rtochius/kernel_stat.h>
 #include <rtochius/smp.h>
 #include <rtochius/memory.h>
 #include <rtochius/cpu.h>

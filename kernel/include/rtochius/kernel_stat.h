@@ -1,5 +1,5 @@
-#ifndef __RTOCHIUS_BOOT_STAT_H_
-#define __RTOCHIUS_BOOT_STAT_H_
+#ifndef __RTOCHIUS_KERNEL_STAT_H_
+#define __RTOCHIUS_KERNEL_STAT_H_
 
 #include <base/linkage.h>
 
@@ -27,4 +27,4 @@ extern bool rodata_enabled;
 extern asmlinkage void start_kernel(void);
 extern void setup_arch(char *);
 
-#endif /* !__RTOCHIUS_BOOT_STAT_H_ */
+#endif /* !__RTOCHIUS_KERNEL_STAT_H_ */

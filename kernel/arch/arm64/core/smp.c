@@ -20,7 +20,7 @@
 #include <base/linkage.h>
 #include <base/init.h>
 
-#include <rtochius/boot_stat.h>
+#include <rtochius/kernel_stat.h>
 #include <rtochius/jiffies.h>
 #include <rtochius/sched.h>
 #include <rtochius/sched/task.h>

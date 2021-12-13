@@ -4,4 +4,5 @@ kernel_sources(
 )
 
 add_subdirectory(locking)
+add_subdirectory(sched)
 add_subdirectory(time)

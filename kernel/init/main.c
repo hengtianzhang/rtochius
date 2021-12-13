@@ -13,7 +13,7 @@
 #include <base/init.h>
 #include <base/types.h>
 
-#include <rtochius/boot_stat.h>
+#include <rtochius/kernel_stat.h>
 #include <rtochius/uts.h>
 #include <rtochius/sched/task.h>
 #include <rtochius/smp.h>

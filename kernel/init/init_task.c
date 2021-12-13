@@ -24,4 +24,5 @@ struct task_struct init_task = {
 	.stack		= init_stack,
 	.mm		= &init_mm,
 	.comm		= INIT_TASK_COMM,
+	.thread = INIT_THREAD,
 };

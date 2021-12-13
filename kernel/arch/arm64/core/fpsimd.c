@@ -58,3 +58,25 @@ u64 read_zcr_features(void)
 
 	return zcr;
 }
+
+/*
+ * Trapped FP/ASIMD access.
+ */
+asmlinkage void do_fpsimd_acc(unsigned int esr, struct pt_regs *regs)
+{
+	/* TODO: implement lazy context saving/restoring */
+	WARN_ON(1);
+}
+
+asmlinkage void do_sve_acc(unsigned int esr, struct pt_regs *regs)
+{
+	panic("el0 sve_acc sync\n");
+}
+
+/*
+ * Raise a SIGFPE for the current process.
+ */
+asmlinkage void do_fpsimd_exc(unsigned int esr, struct pt_regs *regs)
+{
+	panic("el0 fpsimd_exc sync\n");
+}
