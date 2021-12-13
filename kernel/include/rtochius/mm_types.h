@@ -1,6 +1,10 @@
 #ifndef __RTOCHIUS_MM_TYPES_H_
 #define __RTOCHIUS_MM_TYPES_H_
 
+#ifndef __ASSEMBLY__
+
+#include <base/compiler.h>
+#include <base/types.h>
 #include <base/atomic.h>
 #include <base/log2.h>
 #include <base/list.h>
@@ -11,26 +15,50 @@
 #include <asm/pgtable-types.h>
 #include <asm/mmu.h>
 
+#ifdef CONFIG_HAVE_ALIGNED_STRUCT_PAGE
+#define _struct_page_alignment	__aligned(2 * sizeof(unsigned long))
+#else
+#define _struct_page_alignment
+#endif
+
 struct page {
-	unsigned long flags;		/* Atomic flags, some possibly
-					 * updated asynchronously */
-	/*
-	 * Five words (20/40 bytes) are available in this union.
-	 * WARNING: bit 0 of the first word is used for PageTail(). That
-	 * means the other users of this union MUST NOT use the bit to
-	 * avoid collision and false-positive PageTail().
-	 */
+	unsigned long flags;
+
 	union {
-		struct {	/* Page cache and anonymous pages */
-			/**
-			 * @lru: Pageout list, eg. active_list protected by
-			 * zone_lru_lock.  Sometimes used as a generic list
-			 * by the page owner.
-			 */
+		struct {
 			struct list_head lru;
+			void 		*mapping; /* Reserved */
+			unsigned long	index;  /* Reserved */
+			unsigned long private;
+		};
+		struct {
+			struct list_head	slab_list;
+			struct page		*page;	 /* Reserved */
+			struct kmem_cache *slab;
+			void *freelist;
+			unsigned inuse;
+		};
+		struct {	/* Tail pages of compound page */
+			unsigned long compound_head;	/* Bit zero is set */
+			unsigned long compound_dtor;	 /* Reserved */
+			unsigned char compound_order;
+			unsigned long compound_mapcount; /* Reserved */
 		};
 	};
-};
+
+	union {
+		atomic_t _mapcount;
+
+		unsigned int page_type;
+	};
+
+	/* Usage count. *DO NOT USE DIRECTLY*. See page_ref.h */
+	atomic_t _refcount;
+} _struct_page_alignment;
+
+#include <rtochius/page-flags-layout.h>
+#include <rtochius/page-flags.h>
+#include <rtochius/page_ref.h>
 
 /*
  * Used for sizing the vmemmap region on some architectures
@@ -43,6 +71,8 @@ struct mm_struct {
 	mm_context_t context;
 
 	pgtable_t pmd_huge_pte; /* protected by page_table_lock */
+
+	atomic_long_t pgtables_bytes;
 
 	spinlock_t page_table_lock; /* Protects page tables and some counters */
 
@@ -184,4 +214,5 @@ struct vm_area_struct {
 	unsigned long vm_flags;		/* Flags, see mm.h. */
 };
 
+#endif /* !__ASSEMBLY__ */
 #endif /* !__RTOCHIUS_MM_TYPES_H_ */

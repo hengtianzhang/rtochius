@@ -10,11 +10,15 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+#define ASM_OFFSET_GENERATED
+
 #include <base/compiler.h>
 
 #include <rtochius/mm_types.h>
 #include <rtochius/kbuild.h>
 #include <rtochius/arm-smccc.h>
+#include <rtochius/mmzone.h>
+#include <rtochius/page-flags.h>
 
 #include <asm/smp.h>
 
@@ -32,6 +36,13 @@ int main(void)
 	DEFINE(ARM_SMCCC_RES_X2_OFFS,		offsetof(struct arm_smccc_res, a2));
 	DEFINE(ARM_SMCCC_QUIRK_ID_OFFS,	offsetof(struct arm_smccc_quirk, id));
 	DEFINE(ARM_SMCCC_QUIRK_STATE_OFFS,	offsetof(struct arm_smccc_quirk, state));
+	BLANK();
+
+/*
+ * Now, Global data offsets
+ */
+	DEFINE(MAX_NR_ZONES, __MAX_NR_ZONES);
+	DEFINE(NR_PAGEFLAGS, __NR_PAGEFLAGS);
 	BLANK();
 
 	return 0;
