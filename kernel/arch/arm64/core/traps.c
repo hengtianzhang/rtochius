@@ -18,8 +18,12 @@
  */
 #include <base/common.h>
 
+#include <rtochius/smp.h>
+
+#include <asm/exception.h>
 #include <asm/traps.h>
 #include <asm/pgtable.h>
+#include <asm/daifflags.h>
 
 void __pte_error(const char *file, int line, unsigned long val)
 {

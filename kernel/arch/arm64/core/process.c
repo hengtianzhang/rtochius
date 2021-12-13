@@ -27,6 +27,8 @@ void (*pm_power_off)(void);
 
 void (*arm_pm_restart)(enum reboot_mode reboot_mode, const char *cmd);
 
+asmlinkage void ret_from_fork(void) asm("ret_from_fork");
+
 void arch_release_task_struct(struct task_struct *tsk)
 {
 }

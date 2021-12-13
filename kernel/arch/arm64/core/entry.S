@@ -24,6 +24,7 @@
 
 #include <rtochius/arm-smccc.h>
 
+#include <asm/esr.h>
 #include <asm/asm-bug.h>
 #include <asm/assembler.h>
 #include <asm/ptrace.h>

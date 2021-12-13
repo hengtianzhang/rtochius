@@ -19,8 +19,9 @@
  */
 #include <rtochius/mm.h>
 
-#include <asm/base/cmpxchg.h>
+#include <asm/exception.h>
 
+#include <asm/base/cmpxchg.h>
 
 /*
  * This function sets the access flags (dirty, accessed), as well as write
@@ -69,31 +70,31 @@ int ptep_set_access_flags(struct vm_area_struct *vma,
 asmlinkage void __exception do_mem_abort(unsigned long addr, unsigned int esr,
 					 struct pt_regs *regs)
 {
-	panic("Data abort sync, addr: 0x%lx, esr: 0x%lx\n", addr, esr);
+	panic("Data abort sync, addr: 0x%lx, esr: 0x%x\n", addr, esr);
 }
 
 asmlinkage void __exception do_sp_pc_abort(unsigned long addr,
 					   unsigned int esr,
 					   struct pt_regs *regs)
 {
-	panic("Stack or pc sync, addr: 0x%lx, esr: 0x%lx\n", addr, esr);
+	panic("Stack or pc sync, addr: 0x%lx, esr: 0x%x\n", addr, esr);
 }
 
 asmlinkage int __exception do_debug_exception(unsigned long addr,
 					      unsigned int esr,
 					      struct pt_regs *regs)
 {
-	panic("Debug exception sync, addr: 0x%lx, esr: 0x%lx\n", addr, esr);
+	panic("Debug exception sync, addr: 0x%lx, esr: 0x%x\n", addr, esr);
 }
 
 asmlinkage void __exception do_el0_ia_bp_hardening(unsigned long addr,
 						   unsigned int esr,
 						   struct pt_regs *regs)
 {
-	panic("el0 Instruction abort handling sync, addr: 0x%lx, esr: 0x%lx\n", addr, esr);
+	panic("el0 Instruction abort handling sync, addr: 0x%lx, esr: 0x%x\n", addr, esr);
 }
 
 asmlinkage void __exception do_sysinstr(unsigned int esr, struct pt_regs *regs)
 {
-	panic(" _sysinstr sync, esr: 0x%lx\n", esr);
+	panic(" _sysinstr sync, esr: 0x%x\n", esr);
 }

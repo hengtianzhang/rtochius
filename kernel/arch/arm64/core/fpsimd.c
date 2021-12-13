@@ -21,6 +21,7 @@
 #include <asm/fpsimd.h>
 #include <asm/sysreg.h>
 #include <asm/cpufeature.h>
+#include <asm/exception.h>
 
 /*
  * Enable SVE for EL1.

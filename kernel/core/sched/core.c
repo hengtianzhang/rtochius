@@ -1,3 +1,13 @@
+/*
+ *  kernel/sched/core.c
+ *
+ *  Core kernel scheduler code and related syscalls
+ *
+ *  Copyright (C) 1991-2002  Linus Torvalds
+ */
+#include <base/compiler.h>
+
+#include <rtochius/sched.h>
 
 /*
  * this is the entry point to schedule() from kernel preemption

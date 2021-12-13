@@ -57,4 +57,7 @@ static inline pid_t task_pid_nr(struct task_struct *tsk)
 	return tsk->pid;
 }
 
+extern asmlinkage __visible void __sched preempt_schedule_irq(void);
+extern asmlinkage __visible void schedule_tail(struct task_struct *prev);
+
 #endif /* !__RTOCHIUS_SCHED_H_ */

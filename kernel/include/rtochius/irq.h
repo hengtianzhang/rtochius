@@ -3,6 +3,7 @@
 #define __RTOCHIUS_IRQ_H_
 
 #include <asm/cache.h>
+#include <asm/ptrace.h>
 
 /*
  * Allows interrupt handlers to find the irqchip that's been registered as the

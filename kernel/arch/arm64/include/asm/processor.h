@@ -171,5 +171,11 @@ static inline void spin_lock_prefetch(const void *ptr)
 extern unsigned long __ro_after_init signal_minsigstksz; /* sigframe size */
 extern void __init minsigstksz_setup(void);
 
+/*
+ * work pending _TIF_FLAGS
+ */
+extern asmlinkage void do_notify_resume(struct pt_regs *regs,
+				 unsigned long thread_flags);
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_PROCESSOR_H_ */
