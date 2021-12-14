@@ -26,6 +26,7 @@
 #include <rtochius/preempt.h>
 #include <rtochius/percpu.h>
 #include <rtochius/param.h>
+#include <rtochius/stop_machine.h>
 
 #include <asm/fpsimd.h>
 #include <asm/traps.h>
@@ -1038,7 +1039,7 @@ static void update_cpu_capabilities(u16 scope_mask)
  * Enable all the available capabilities on this CPU. The capabilities
  * with BOOT_CPU scope are handled separately and hence skipped here.
  */
-static void cpu_enable_non_boot_scope_capabilities(void *__unused)
+static int cpu_enable_non_boot_scope_capabilities(void *__unused)
 {
 	int i;
 	u16 non_boot_scope = SCOPE_ALL & ~SCOPE_BOOT_CPU;
@@ -1055,6 +1056,8 @@ static void cpu_enable_non_boot_scope_capabilities(void *__unused)
 		if (cap->cpu_enable)
 			cap->cpu_enable(cap);
 	}
+
+	return 0;
 }
 
 /*
@@ -1103,7 +1106,8 @@ static void __init enable_cpu_capabilities(u16 scope_mask)
 	 * PSTATE that disappears when we return.
 	 */
 	if (!boot_scope)
-		on_each_cpu(cpu_enable_non_boot_scope_capabilities, NULL, 1);
+		stop_machine(cpu_enable_non_boot_scope_capabilities,
+			     NULL, cpu_online_mask);
 }
 
 /*

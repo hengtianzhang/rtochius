@@ -15,6 +15,8 @@
 #include <rtochius/jiffies.h>
 #include <rtochius/preempt.h>
 #include <rtochius/interrupt.h>
+#include <rtochius/smpboot.h>
+#include <rtochius/param.h>
 
 DEFINE_PER_CPU_ALIGNED(irq_cpustat_t, irq_stat);
 
@@ -222,8 +224,7 @@ static inline void invoke_softirq(void)
 	if (ksoftirqd_running(local_softirq_pending()))
 		return;
 
-	do_softirq_own_stack();
-
+	wakeup_softirqd();
 }
 
 /*
@@ -299,3 +300,18 @@ static void run_ksoftirqd(unsigned int cpu)
 	}
 	local_irq_enable();
 }
+
+static struct smp_hotplug_thread softirq_threads = {
+	.store			= &ksoftirqd,
+	.thread_should_run	= ksoftirqd_should_run,
+	.thread_fn		= run_ksoftirqd,
+	.thread_comm		= "ksoftirqd/%u",
+};
+
+static __init int spawn_ksoftirqd(void)
+{
+	BUG_ON(smpboot_register_percpu_thread(&softirq_threads));
+
+	return 0;
+}
+early_initcall(spawn_ksoftirqd);
