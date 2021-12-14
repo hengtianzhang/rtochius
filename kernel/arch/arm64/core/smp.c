@@ -31,6 +31,7 @@
 #include <rtochius/memory.h>
 #include <rtochius/cpumask.h>
 #include <rtochius/delay.h>
+#include <rtochius/softirq.h>
 
 #include <asm/irqflags.h>
 #include <asm/daifflags.h>
@@ -400,6 +401,17 @@ void __init set_smp_cross_call(void (*fn)(const struct cpumask *, unsigned int))
 static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
 {
 	__smp_cross_call(target, ipinr);
+}
+
+u64 smp_irq_stat_cpu(unsigned int cpu)
+{
+	u64 sum = 0;
+	int i;
+
+	for (i = 0; i < NR_IPI; i++)
+		sum += __get_irq_stat(cpu, ipi_irqs[i]);
+
+	return sum;
 }
 
 void arch_send_call_function_ipi_mask(const struct cpumask *mask)

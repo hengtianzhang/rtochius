@@ -22,4 +22,6 @@
  */
 #include <rtochius/percpu.h>
 
+unsigned long irq_err_count;
+
 DEFINE_PER_CPU(unsigned long *, irq_stack_ptr);

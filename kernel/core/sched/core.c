@@ -46,3 +46,8 @@ asmlinkage __visible void __sched preempt_schedule(void)
 {
 
 }
+
+int wake_up_process(struct task_struct *tsk)
+{
+	return 0;
+}

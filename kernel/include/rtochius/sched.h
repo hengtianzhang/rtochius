@@ -258,6 +258,24 @@ static inline bool is_percpu_thread(void)
 		(current->nr_cpus_allowed  == 1);
 }
 
+/**
+ * is_idle_task - is the specified task an idle task?
+ * @p: the task in question.
+ *
+ * Return: 1 if @p is an idle task. 0 otherwise.
+ */
+static inline bool is_idle_task(const struct task_struct *p)
+{
+	return !!(p->flags & PF_IDLE);
+}
+
+static inline void
+current_restore_flags(unsigned long orig_flags, unsigned long flags)
+{
+	current->flags &= ~flags;
+	current->flags |= orig_flags & flags;
+}
+
 static inline struct thread_info *task_thread_info(struct task_struct *task)
 {
 	return &task->thread_info;
@@ -324,5 +342,7 @@ static inline unsigned int task_cpu(const struct task_struct *p)
 }
 
 extern void set_task_cpu(struct task_struct *p, unsigned int cpu);
+
+extern int wake_up_process(struct task_struct *tsk);
 
 #endif /* !__RTOCHIUS_SCHED_H_ */
