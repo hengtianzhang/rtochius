@@ -5,10 +5,7 @@
 
 #include <rtochius/irqflags.h>
 #include <rtochius/smp.h>
-
-#include <asm/stackprotector.h>
-
-unsigned long long __stack_chk_guard;
+#include <rtochius/stackprotector.h>
 
 #ifdef CONFIG_STACKPROTECTOR
 /*

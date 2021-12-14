@@ -23,6 +23,11 @@
 #include <rtochius/mm_types.h>
 #include <rtochius/percpu.h>
 
+#if defined(CONFIG_STACKPROTECTOR)
+#include <rtochius/stackprotector.h>
+unsigned long __stack_chk_guard __read_mostly;
+#endif
+
 void (*pm_power_off)(void);
 
 void (*arm_pm_restart)(enum reboot_mode reboot_mode, const char *cmd);

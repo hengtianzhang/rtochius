@@ -24,9 +24,9 @@
 #include <rtochius/param.h>
 #include <rtochius/memory.h>
 #include <rtochius/extable.h>
+#include <rtochius/stackprotector.h>
 
 #include <asm/mmu.h>
-#include <asm/stackprotector.h>
 
 enum system_states system_state __read_mostly;
 

@@ -23,7 +23,7 @@
 
 #include <asm/current.h>
 
-extern unsigned long long __stack_chk_guard;
+extern unsigned long __stack_chk_guard;
 
 /*
  * Initialize the stackprotector canary value.
@@ -42,9 +42,5 @@ static __always_inline void boot_init_stack_canary(void)
 
 	__stack_chk_guard = current->stack_canary;
 }
-
-#ifdef CONFIG_STACKPROTECTOR
-extern __visible void __stack_chk_fail(void);
-#endif /* CONFIG_STACKPROTECTOR */
 
 #endif	/* !__ASM_STACKPROTECTOR_H_ */
