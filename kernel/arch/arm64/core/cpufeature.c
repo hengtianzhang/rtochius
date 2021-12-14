@@ -1038,7 +1038,7 @@ static void update_cpu_capabilities(u16 scope_mask)
  * Enable all the available capabilities on this CPU. The capabilities
  * with BOOT_CPU scope are handled separately and hence skipped here.
  */
-static int cpu_enable_non_boot_scope_capabilities(void *__unused)
+static void cpu_enable_non_boot_scope_capabilities(void *__unused)
 {
 	int i;
 	u16 non_boot_scope = SCOPE_ALL & ~SCOPE_BOOT_CPU;
@@ -1055,7 +1055,6 @@ static int cpu_enable_non_boot_scope_capabilities(void *__unused)
 		if (cap->cpu_enable)
 			cap->cpu_enable(cap);
 	}
-	return 0;
 }
 
 /*

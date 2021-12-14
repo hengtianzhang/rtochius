@@ -56,24 +56,6 @@ DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
  */
 #define raw_smp_processor_id() (*raw_cpu_ptr(&cpu_number))
 
-struct task_struct;
-
-/*
- * Initial data for bringing up a secondary CPU.
- * @stack  - sp for the secondary CPU
- * @status - Result passed back from the secondary CPU to
- *           indicate failure.
- */
-struct secondary_data {
-	void *stack;
-	struct task_struct *task;
-	long status;
-};
-
-extern struct secondary_data secondary_data;
-extern s64 __early_cpu_boot_status;
-extern void secondary_entry(void);
-
 /*
  * Called from C code, this handles an IPI.
  */
@@ -96,6 +78,23 @@ extern void (*__smp_cross_call)(const struct cpumask *, unsigned int);
  * Called from the secondary holding pen, this is the secondary CPU entry point.
  */
 asmlinkage void secondary_start_kernel(void);
+
+struct task_struct;
+/*
+ * Initial data for bringing up a secondary CPU.
+ * @stack  - sp for the secondary CPU
+ * @status - Result passed back from the secondary CPU to
+ *           indicate failure.
+ */
+struct secondary_data {
+	void *stack;
+	struct task_struct *task;
+	long status;
+};
+
+extern struct secondary_data secondary_data;
+extern s64 __early_cpu_boot_status;
+extern void secondary_entry(void);
 
 extern void arch_send_call_function_single_ipi(int cpu);
 extern void arch_send_call_function_ipi_mask(const struct cpumask *mask);

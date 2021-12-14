@@ -416,13 +416,11 @@ static inline void __flush_cpu_slab(struct kmem_cache *s, int cpu)
 		flush_slab(s, c);
 }
 
-static int flush_cpu_slab(void *d)
+static void flush_cpu_slab(void *d)
 {
 	struct kmem_cache *s = d;
 
 	__flush_cpu_slab(s, smp_processor_id());
-
-	return 0;
 }
 
 static void flush_all(struct kmem_cache *s)

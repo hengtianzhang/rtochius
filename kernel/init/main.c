@@ -163,4 +163,8 @@ asmlinkage __visible void __init start_kernel(void)
 
 	sort_main_extable();
 	mm_init();
+
+	call_function_init();
+	WARN(!irqs_disabled(), "Interrupts were enabled early\n");
+
 }

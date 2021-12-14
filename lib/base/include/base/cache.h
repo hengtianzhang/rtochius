@@ -43,6 +43,20 @@
 #define ____cacheline_aligned __attribute__((__aligned__(SMP_CACHE_BYTES)))
 #endif
 
+#ifndef ____cacheline_aligned_in_smp
+#define ____cacheline_aligned_in_smp ____cacheline_aligned
+#endif
+
+#ifndef __cacheline_aligned
+#define __cacheline_aligned					\
+  __attribute__((__aligned__(SMP_CACHE_BYTES),			\
+		 __section__(".data..cacheline_aligned")))
+#endif /* __cacheline_aligned */
+
+#ifndef __cacheline_aligned_in_smp
+#define __cacheline_aligned_in_smp __cacheline_aligned
+#endif
+
 /*
  * The maximum alignment needed for some critical structures
  * These could be inter-node cacheline sizes/L3 cacheline
