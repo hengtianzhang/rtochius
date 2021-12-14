@@ -1,8 +1,6 @@
 #ifndef __BASE_CACHE_H_
 #define __BASE_CACHE_H_
 
-#include <base/common.h>
-
 #include <asm/base/cache.h>
 
 #ifndef L1_CACHE_ALIGN

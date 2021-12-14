@@ -17,6 +17,8 @@
  *                              Copyright (C) 2000, 2001, 2002  Ingo Molnar
  *              Designed by David S. Miller, Alexey Kuznetsov and Ingo Molnar
  */
-#include <base/cache.h>
+#include <base/types.h>
+
+#include <asm/cache.h>
 
 u64 __cacheline_aligned_in_smp jiffies_64 = 0;

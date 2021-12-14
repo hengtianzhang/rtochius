@@ -27,6 +27,7 @@
 /* see: Documentation/crc32.txt for a description of algorithms */
 
 #include <base/cache.h>
+#include <base/common.h>
 #include <base/compiler.h>
 #include <base/crc32.h>
 #include <base/crc32poly.h>

@@ -195,6 +195,8 @@ struct task_struct {
 	/* A live task holds one reference: */
 	atomic_t			stack_refcount;
 
+	int				pagefault_disabled;
+
 	/* CPU-specific state of this task: */
 	struct thread_struct		thread;
 };

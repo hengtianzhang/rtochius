@@ -15,4 +15,6 @@
 
 #define INIT_PREEMPT_COUNT 1
 
+#define in_atomic()	0
+
 #endif /* !__RTOCHIUS_PREEMPT_H_ */
