@@ -18,6 +18,9 @@
  */
 #include <base/common.h>
 
+#include <rtochius/threads.h>
+#include <rtochius/sched.h>
+
 #include <asm/fpsimd.h>
 #include <asm/sysreg.h>
 #include <asm/cpufeature.h>
@@ -58,6 +61,23 @@ u64 read_zcr_features(void)
 	zcr |= vq_max - 1; /* set LEN field to maximum effective value */
 
 	return zcr;
+}
+
+void fpsimd_flush_thread(void)
+{
+}
+
+/*
+ * Invalidate live CPU copies of task t's FPSIMD state
+ */
+void fpsimd_flush_task_state(struct task_struct *t)
+{
+	t->thread.fpsimd_cpu = NR_CPUS;
+}
+
+void fpsimd_thread_switch(struct task_struct *next)
+{
+
 }
 
 /*

@@ -24,6 +24,7 @@
 #include <asm/traps.h>
 #include <asm/pgtable.h>
 #include <asm/daifflags.h>
+#include <asm/stacktrace.h>
 
 void __pte_error(const char *file, int line, unsigned long val)
 {
@@ -135,4 +136,8 @@ asmlinkage void bad_el0_sync(struct pt_regs *regs, int reason, unsigned int esr)
 asmlinkage void do_serror(struct pt_regs *regs, unsigned int esr)
 {
 	panic("do_serror NMI exception\n");
+}
+
+void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk)
+{
 }

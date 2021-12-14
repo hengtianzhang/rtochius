@@ -147,6 +147,8 @@ extern struct task_struct *cpu_switch_to(struct task_struct *prev,
 #define task_pt_regs(p) \
 	((struct pt_regs *)(THREAD_SIZE + task_stack_page(p)) - 1)
 
+#define current_pt_regs() task_pt_regs(current)
+
 /*
  * Prefetching support
  */

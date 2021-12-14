@@ -8,6 +8,7 @@
 #include <base/compiler.h>
 
 #include <rtochius/sched.h>
+#include <rtochius/sched/task.h>
 
 /*
  * this is the entry point to schedule() from kernel preemption
@@ -27,4 +28,11 @@ asmlinkage __visible void __sched preempt_schedule_irq(void)
 asmlinkage __visible void schedule_tail(struct task_struct *prev)
 {
 
+}
+
+int in_sched_functions(unsigned long addr)
+{
+	return in_lock_functions(addr) ||
+		(addr >= (unsigned long)__sched_text_start
+		&& addr < (unsigned long)__sched_text_end);
 }

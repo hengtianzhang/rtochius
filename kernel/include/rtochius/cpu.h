@@ -27,6 +27,8 @@ struct cpu {
 
 extern void boot_cpu_init(void);
 
+extern void arch_cpu_idle(void);
+
 extern bool arch_match_cpu_phys_id(int cpu, u64 phys_id);
 extern bool arch_find_n_match_cpu_physical_id(struct device_node *cpun,
 					      int cpu, unsigned int *thread);

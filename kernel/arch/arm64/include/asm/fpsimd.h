@@ -24,5 +24,10 @@ extern void sve_kernel_enable(const struct arm64_cpu_capabilities *__unused);
 
 extern u64 read_zcr_features(void);
 
+extern void fpsimd_thread_switch(struct task_struct *next);
+extern void fpsimd_flush_thread(void);
+
+extern void fpsimd_flush_task_state(struct task_struct *target);
+
 #endif /* !__ASSEMBLY__ */
 #endif /* !__ASM_FP_H_ */

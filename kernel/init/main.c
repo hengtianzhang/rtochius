@@ -17,7 +17,7 @@
 #include <rtochius/uts.h>
 #include <rtochius/slab.h>
 #include <rtochius/mm.h>
-#include <rtochius/sched/task.h>
+#include <rtochius/sched/task_stack.h>
 #include <rtochius/smp.h>
 #include <rtochius/cpu.h>
 #include <rtochius/irqflags.h>

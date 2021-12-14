@@ -10,4 +10,7 @@ enum reboot_mode {
 	REBOOT_GPIO,
 };
 
+extern void machine_halt(void);
+extern void machine_power_off(void);
+
 #endif /* !__RTOCHIUS_REBOOT_H_ */

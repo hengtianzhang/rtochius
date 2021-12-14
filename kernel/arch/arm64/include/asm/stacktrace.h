@@ -17,6 +17,7 @@
 #define __ASM_STACKTRACE_H_
 
 #include <rtochius/percpu.h>
+#include <rtochius/sched/task_stack.h>
 
 #include <asm/ptrace.h>
 #include <asm/memory.h>

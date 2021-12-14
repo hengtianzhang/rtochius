@@ -23,7 +23,7 @@
 #include <rtochius/kernel_stat.h>
 #include <rtochius/jiffies.h>
 #include <rtochius/sched.h>
-#include <rtochius/sched/task.h>
+#include <rtochius/sched/task_stack.h>
 #include <rtochius/of.h>
 #include <rtochius/smp.h>
 #include <rtochius/percpu.h>

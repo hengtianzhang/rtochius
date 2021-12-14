@@ -28,11 +28,13 @@
 #define TIF_FSCHECK			2	/* Check FS is USER_DS on return */
 #define TIF_POLLING_NRFLAG	4
 #define TIF_SINGLESTEP		21
+#define TIF_SVE			23	/* Scalable Vector Extension in use */
 
 #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
 #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
 #define _TIF_FSCHECK			(1 << TIF_FSCHECK)
 #define _TIF_SINGLESTEP			(1 << TIF_SINGLESTEP)
+#define _TIF_SVE		(1 << TIF_SVE)
 
 #define _TIF_WORK_MASK		(_TIF_NEED_RESCHED | _TIF_SIGPENDING | _TIF_FSCHECK)
 
@@ -77,6 +79,8 @@ void arch_setup_new_exec(void);
 #define arch_setup_new_exec     arch_setup_new_exec
 
 void arch_release_task_struct(struct task_struct *tsk);
+
+extern int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src);
 
 #define INIT_THREAD_INFO(tsk)						\
 {									\
