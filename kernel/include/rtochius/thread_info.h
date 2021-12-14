@@ -9,6 +9,7 @@
 #define __RTOCHIUS_THREAD_INFO_H_
 
 #include <base/bitops.h>
+#include <base/common.h>
 
 /*
  * For CONFIG_THREAD_INFO_IN_TASK kernels we need <asm/current.h> for the

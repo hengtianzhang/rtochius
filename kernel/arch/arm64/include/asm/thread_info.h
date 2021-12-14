@@ -44,8 +44,6 @@
 
 #include <base/types.h>
 
-#include <rtochius/preempt.h>
-
 typedef unsigned long mm_segment_t;
 
 /*

@@ -36,3 +36,13 @@ int in_sched_functions(unsigned long addr)
 		(addr >= (unsigned long)__sched_text_start
 		&& addr < (unsigned long)__sched_text_end);
 }
+
+/*
+ * this is the entry point to schedule() from in-kernel preemption
+ * off of preempt_enable. Kernel preemptions off return from interrupt
+ * occur there and call schedule directly.
+ */
+asmlinkage __visible void __sched preempt_schedule(void)
+{
+
+}
