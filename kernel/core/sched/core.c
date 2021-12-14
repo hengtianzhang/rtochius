@@ -7,6 +7,7 @@
  */
 #include <base/compiler.h>
 
+#include <rtochius/sched/init.h>
 #include <rtochius/sched.h>
 #include <rtochius/sched/task.h>
 
@@ -19,6 +20,11 @@
 asmlinkage __visible void __sched preempt_schedule_irq(void)
 {
 	panic("preempt_schedule_irq\n");
+}
+
+void sched_init(void)
+{
+
 }
 
 /**

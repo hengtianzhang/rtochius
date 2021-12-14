@@ -17,6 +17,7 @@
 #include <rtochius/uts.h>
 #include <rtochius/slab.h>
 #include <rtochius/mm.h>
+#include <rtochius/sched/init.h>
 #include <rtochius/sched/task_stack.h>
 #include <rtochius/smp.h>
 #include <rtochius/cpu.h>
@@ -163,6 +164,21 @@ asmlinkage __visible void __init start_kernel(void)
 
 	sort_main_extable();
 	mm_init();
+
+	/*
+	 * Set up the scheduler prior starting any interrupts (such as the
+	 * timer interrupt). Full topology setup happens at smp_init()
+	 * time - but meanwhile we still have a functioning scheduler.
+	 */
+	sched_init();
+	/*
+	 * Disable preemption - early bootup scheduling is extremely
+	 * fragile until we cpu_idle() for the first time.
+	 */
+	preempt_disable();
+	if (WARN(!irqs_disabled(),
+		 "Interrupts were enabled *very* early, fixing it\n"))
+		local_irq_disable();
 
 	call_function_init();
 	WARN(!irqs_disabled(), "Interrupts were enabled early\n");
