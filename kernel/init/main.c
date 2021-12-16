@@ -26,6 +26,7 @@
 #include <rtochius/memory.h>
 #include <rtochius/extable.h>
 #include <rtochius/stackprotector.h>
+#include <rtochius/radix-tree.h>
 
 #include <asm/mmu.h>
 
@@ -179,6 +180,7 @@ asmlinkage __visible void __init start_kernel(void)
 	if (WARN(!irqs_disabled(),
 		 "Interrupts were enabled *very* early, fixing it\n"))
 		local_irq_disable();
+	radix_tree_init();
 
 	call_function_init();
 	WARN(!irqs_disabled(), "Interrupts were enabled early\n");

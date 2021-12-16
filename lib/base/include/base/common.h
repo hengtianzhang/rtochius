@@ -697,4 +697,41 @@ extern void print_hex_dump_bytes(const char *prefix_str, int prefix_type,
 	IS_ERR_OR_NULL(__mptr) ? ERR_CAST(__mptr) :			\
 		((type *)(__mptr - offsetof(type, member))); })
 
+#define __dereference_check(p)	\
+({	\
+	/* Dependency order vs. p above. */ \
+	typeof(*p) *________p1 = (typeof(*p) *)READ_ONCE(p); \
+	((typeof(*p) *)(________p1)); \
+})
+#define __dereference_protected(p) \
+({ \
+	((typeof(*p) *)(p)); \
+})
+#define dereference_raw(p) \
+({ \
+	/* Dependency order vs. p above. */ \
+	typeof(p) ________p1 = READ_ONCE(p); \
+	((typeof(*p) *)(________p1)); \
+})
+
+#define dereference_check(p)		__dereference_check((p))
+#define dereference_protected(p)	__dereference_protected((p))
+
+#define _INITIALIZER(v) (typeof(*(v)) *)(v)
+#define INIT_POINTER(p, v) \
+	do { \
+		WRITE_ONCE(p, _INITIALIZER(v)); \
+	} while (0)
+
+#define assign_pointer(p, v)					      \
+({									      \
+	uintptr_t _r_a_p__v = (uintptr_t)(v);				      \
+									      \
+	if (__builtin_constant_p(v) && (_r_a_p__v) == (uintptr_t)NULL)	      \
+		WRITE_ONCE((p), (typeof(p))(_r_a_p__v));		      \
+	else								      \
+		smp_store_release(&p, _INITIALIZER((typeof(p))_r_a_p__v)); \
+	_r_a_p__v;							      \
+})
+
 #endif /* !__BASE_COMMON_H_ */

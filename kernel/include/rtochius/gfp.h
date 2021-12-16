@@ -15,11 +15,13 @@
 #define ___GFP_KERNEL		BIT(5)
 #define ___GFP_USER			BIT(6)
 
-#define ___GFP_BITS_SHIFT	7
+#define __GFP_BITS_SHIFT	7
+#define __GFP_BITS_MASK 	((gfp_t)((1 << __GFP_BITS_SHIFT) - 1))
 
 #define __GFP_DMA			((gfp_t)___GFP_DMA)
 #define __GFP_MOVABLE		((gfp_t)___GFP_MOVABLE)
 #define __GFP_NORMAL		((gfp_t)___GFP_NORMAL)
+#define GFP_ZONEMASK	(__GFP_DMA|__GFP_MOVABLE)
 
 #define __GFP_ZERO			((gfp_t)___GFP_ZERO)
 #define __GFP_NOWARN		((gfp_t)___GFP_NOWARN)
