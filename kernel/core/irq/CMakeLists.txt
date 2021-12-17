@@ -1,4 +1,4 @@
 
 kernel_sources(
-	handle.c
+	chip.c handle.c manage.c
 )

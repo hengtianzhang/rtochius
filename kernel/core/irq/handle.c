@@ -7,6 +7,9 @@
  * information is available in Documentation/core-api/genericirq.rst
  *
  */
+#include <base/errno.h>
+#include <base/init.h>
+
 #include <rtochius/irq.h>
 
 void (*handle_arch_irq)(struct pt_regs *) __ro_after_init;
