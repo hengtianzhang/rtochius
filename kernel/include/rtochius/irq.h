@@ -409,6 +409,9 @@ enum {
 	IRQCHIP_SUPPORTS_LEVEL_MSI	= (1 <<  7),
 };
 
+/*
+ * The header file for kernel/core/irq/irqdesc.c
+ */
 #include <rtochius/irqdesc.h>
 
 #ifndef NR_IRQS_LEGACY
@@ -477,6 +480,9 @@ extern int irq_set_percpu_devid(unsigned int irq);
 extern int irq_get_percpu_devid_partition(unsigned int irq,
 					  struct cpumask *affinity);
 
+/*
+ * The header file for kernel/core/irq/handle.c
+ */
 extern void handle_bad_irq(struct irq_desc *desc);
 
 extern irqreturn_t no_action(int cpl, void *dev_id);
@@ -503,8 +509,12 @@ extern int set_handle_irq(void (*handle_irq)(struct pt_regs *));
  */
 extern void (*handle_arch_irq)(struct pt_regs *);
 
-
-
+/*
+ * The header file for kernel/core/irq/handle.c
+ */
+/* Dummy irq-chip implementations: */
+extern struct irq_chip no_irq_chip;
+extern struct irq_chip dummy_irq_chip;
 
 
 
