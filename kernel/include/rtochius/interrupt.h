@@ -3,6 +3,8 @@
 #ifndef __RTOCHIUS_INTERRUPT_H_
 #define __RTOCHIUS_INTERRUPT_H_
 
+#include <rtochius/cpumask.h>
+
 /*
  * We want to know which function is an entrypoint of a hardirq or a softirq.
  */
@@ -26,5 +28,18 @@
  */
 extern void irq_enter(void);
 extern void irq_exit(void);
+
+extern cpumask_var_t irq_default_affinity;
+
+
+/**
+ * struct irq_affinity_desc - Interrupt affinity descriptor
+ * @mask:	cpumask to hold the affinity assignment
+ * @is_managed: 1 if the interrupt is managed internally
+ */
+struct irq_affinity_desc {
+	struct cpumask	mask;
+	unsigned int	is_managed : 1;
+};
 
 #endif /* !__RTOCHIUS_INTERRUPT_H_ */
