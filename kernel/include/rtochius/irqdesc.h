@@ -73,6 +73,7 @@ struct irq_desc {
 	struct cpumask		*percpu_enabled;
 	const struct cpumask	*percpu_affinity;
 	const struct cpumask	*affinity_hint;
+	unsigned long		threads_oneshot;
 	struct mutex		request_mutex;
 	int			parent_irq;
 	const char		*name;

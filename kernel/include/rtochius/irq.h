@@ -516,27 +516,228 @@ extern void (*handle_arch_irq)(struct pt_regs *);
 extern struct irq_chip no_irq_chip;
 extern struct irq_chip dummy_irq_chip;
 
+/*
+ * The header file for kernel/core/irq/chip.c
+ */
+extern struct irqaction chained_action;
 
+/* Set/get chip/data for an IRQ: */
+extern int irq_set_chip(unsigned int irq, struct irq_chip *chip);
+extern int irq_set_chip_data(unsigned int irq, void *data);
+extern int irq_set_irq_type(unsigned int irq, unsigned int type);
+extern int irq_set_handler_data(unsigned int irq, void *data);
+extern int irq_set_msi_desc(unsigned int irq, struct msi_desc *entry);
+extern int irq_set_msi_desc_off(unsigned int irq_base, unsigned int irq_offset,
+				struct msi_desc *entry);
 
+extern struct irq_data *irq_get_irq_data(unsigned int irq);
 
+static inline struct irq_chip *irq_get_chip(unsigned int irq)
+{
+	struct irq_data *d = irq_get_irq_data(irq);
+	return d ? d->chip : NULL;
+}
 
+static inline struct irq_chip *irq_data_get_irq_chip(struct irq_data *d)
+{
+	return d->chip;
+}
 
+static inline void *irq_get_chip_data(unsigned int irq)
+{
+	struct irq_data *d = irq_get_irq_data(irq);
+	return d ? d->chip_data : NULL;
+}
 
+static inline void *irq_data_get_irq_chip_data(struct irq_data *d)
+{
+	return d->chip_data;
+}
 
+static inline void *irq_get_handler_data(unsigned int irq)
+{
+	struct irq_data *d = irq_get_irq_data(irq);
+	return d ? d->common->handler_data : NULL;
+}
 
+static inline void *irq_data_get_irq_handler_data(struct irq_data *d)
+{
+	return d->common->handler_data;
+}
 
+static inline struct msi_desc *irq_get_msi_desc(unsigned int irq)
+{
+	struct irq_data *d = irq_get_irq_data(irq);
+	return d ? d->common->msi_desc : NULL;
+}
 
+static inline struct msi_desc *irq_data_get_msi_desc(struct irq_data *d)
+{
+	return d->common->msi_desc;
+}
 
+static inline u32 irq_get_trigger_type(unsigned int irq)
+{
+	struct irq_data *d = irq_get_irq_data(irq);
+	return d ? irqd_get_trigger_type(d) : 0;
+}
 
+static inline int irq_common_data_get_node(struct irq_common_data *d)
+{
+	return 0;
+}
 
+static inline int irq_data_get_node(struct irq_data *d)
+{
+	return irq_common_data_get_node(d->common);
+}
 
+static inline struct cpumask *irq_get_affinity_mask(int irq)
+{
+	struct irq_data *d = irq_get_irq_data(irq);
 
+	return d ? d->common->affinity : NULL;
+}
 
+static inline struct cpumask *irq_data_get_affinity_mask(struct irq_data *d)
+{
+	return d->common->affinity;
+}
 
+extern int irq_startup(struct irq_desc *desc, bool resend, bool force);
+extern int irq_activate(struct irq_desc *desc);
+extern int irq_activate_and_startup(struct irq_desc *desc, bool resend);
 
+extern void irq_shutdown(struct irq_desc *desc);
+extern void irq_enable(struct irq_desc *desc);
+extern void irq_disable(struct irq_desc *desc);
+extern void irq_percpu_enable(struct irq_desc *desc, unsigned int cpu);
+extern void irq_percpu_disable(struct irq_desc *desc, unsigned int cpu);
+extern void mask_irq(struct irq_desc *desc);
+extern void unmask_irq(struct irq_desc *desc);
+extern void unmask_threaded_irq(struct irq_desc *desc);
 
+/*
+ * Built-in IRQ handlers for various IRQ types,
+ * callable via desc->handle_irq()
+ */
+extern void handle_nested_irq(unsigned int irq);
+extern void handle_simple_irq(struct irq_desc *desc);
+extern void handle_untracked_irq(struct irq_desc *desc);
+extern void handle_level_irq(struct irq_desc *desc);
+extern void handle_fasteoi_irq(struct irq_desc *desc);
+extern void handle_edge_irq(struct irq_desc *desc);
+extern void handle_edge_eoi_irq(struct irq_desc *desc);
+extern void handle_percpu_irq(struct irq_desc *desc);
+extern void handle_percpu_devid_irq(struct irq_desc *desc);
 
+extern void
+__irq_set_handler(unsigned int irq, irq_flow_handler_t handle, int is_chained,
+		  const char *name);
 
+static inline void
+irq_set_handler(unsigned int irq, irq_flow_handler_t handle)
+{
+	__irq_set_handler(irq, handle, 0, NULL);
+}
 
+/*
+ * Set a highlevel chained flow handler for a given IRQ.
+ * (a chained handler is automatically enabled and set to
+ *  IRQ_NOREQUEST, IRQ_NOPROBE, and IRQ_NOTHREAD)
+ */
+static inline void
+irq_set_chained_handler(unsigned int irq, irq_flow_handler_t handle)
+{
+	__irq_set_handler(irq, handle, 1, NULL);
+}
+
+/*
+ * Set a highlevel chained flow handler and its data for a given IRQ.
+ * (a chained handler is automatically enabled and set to
+ *  IRQ_NOREQUEST, IRQ_NOPROBE, and IRQ_NOTHREAD)
+ */
+void
+irq_set_chained_handler_and_data(unsigned int irq, irq_flow_handler_t handle,
+				 void *data);
+
+extern void
+irq_set_chip_and_handler_name(unsigned int irq, struct irq_chip *chip,
+			      irq_flow_handler_t handle, const char *name);
+
+static inline void irq_set_chip_and_handler(unsigned int irq, struct irq_chip *chip,
+					    irq_flow_handler_t handle)
+{
+	irq_set_chip_and_handler_name(irq, chip, handle, NULL);
+}
+
+void irq_modify_status(unsigned int irq, unsigned long clr, unsigned long set);
+
+static inline void irq_set_status_flags(unsigned int irq, unsigned long set)
+{
+	irq_modify_status(irq, 0, set);
+}
+
+static inline void irq_clear_status_flags(unsigned int irq, unsigned long clr)
+{
+	irq_modify_status(irq, clr, 0);
+}
+
+static inline void irq_set_noprobe(unsigned int irq)
+{
+	irq_modify_status(irq, 0, IRQ_NOPROBE);
+}
+
+static inline void irq_set_probe(unsigned int irq)
+{
+	irq_modify_status(irq, IRQ_NOPROBE, 0);
+}
+
+static inline void irq_set_nothread(unsigned int irq)
+{
+	irq_modify_status(irq, 0, IRQ_NOTHREAD);
+}
+
+static inline void irq_set_thread(unsigned int irq)
+{
+	irq_modify_status(irq, IRQ_NOTHREAD, 0);
+}
+
+static inline void irq_set_nested_thread(unsigned int irq, bool nest)
+{
+	if (nest)
+		irq_set_status_flags(irq, IRQ_NESTED_THREAD);
+	else
+		irq_clear_status_flags(irq, IRQ_NESTED_THREAD);
+}
+
+static inline void irq_set_percpu_devid_flags(unsigned int irq)
+{
+	irq_set_status_flags(irq,
+			     IRQ_NOAUTOEN | IRQ_PER_CPU | IRQ_NOTHREAD |
+			     IRQ_NOPROBE | IRQ_PER_CPU_DEVID);
+}
+
+extern void irq_cpu_online(void);
+extern void irq_cpu_offline(void);
+
+extern void handle_fasteoi_ack_irq(struct irq_desc *desc);
+extern void handle_fasteoi_mask_irq(struct irq_desc *desc);
+
+extern void irq_chip_enable_parent(struct irq_data *data);
+extern void irq_chip_disable_parent(struct irq_data *data);
+extern void irq_chip_ack_parent(struct irq_data *data);
+extern void irq_chip_mask_parent(struct irq_data *data);
+extern void irq_chip_unmask_parent(struct irq_data *data);
+extern void irq_chip_eoi_parent(struct irq_data *data);
+extern int irq_chip_set_affinity_parent(struct irq_data *data,
+					const struct cpumask *dest,
+					bool force);
+extern int irq_chip_set_type_parent(struct irq_data *data, unsigned int type);
+extern int irq_chip_retrigger_hierarchy(struct irq_data *data);
+extern int irq_chip_set_vcpu_affinity_parent(struct irq_data *data,
+					     void *vcpu_info);
+extern int irq_chip_set_wake_parent(struct irq_data *data, unsigned int on);
+extern int irq_chip_compose_msi_msg(struct irq_data *data, struct msi_msg *msg);
 
 #endif /* !__RTOCHIUS_IRQ_H_ */
