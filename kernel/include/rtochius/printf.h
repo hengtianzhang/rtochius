@@ -10,4 +10,6 @@ extern char *kasprintf(gfp_t gfp, const char *fmt, ...)
 	__attribute__ ((format (printf, 2, 3)));
 extern char *kvasprintf(gfp_t gfp, const char *fmt, va_list args);
 
+extern char *kstrdup(const char *s, gfp_t gfp);
+
 #endif /* !__RTOCHIUS_PRINTF__H_ */
